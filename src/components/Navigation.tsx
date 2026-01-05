@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 import logo from "~/assets/dharvista-logo.jpg";
 
@@ -20,50 +19,12 @@ const navLinks = [
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
   const pathname = usePathname();
-  const lastScrollY = useRef(0);
-  const headerRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    function updateNavTop() {
-      const h = headerRef.current?.offsetHeight ?? 96;
-      const topValue = isHidden ? "0px" : `${h}px`;
-      document.documentElement.style.setProperty("--nav-top", topValue);
-    }
-    updateNavTop();
-    window.addEventListener("resize", updateNavTop);
-    return () => window.removeEventListener("resize", updateNavTop);
-  }, [isHidden, isOpen]);
-
-  useEffect(() => {
-    function onScroll() {
-      const y = window.scrollY || window.pageYOffset;
-      if (isOpen) {
-        lastScrollY.current = y;
-        setIsHidden(false);
-        return;
-      }
-      if (y > lastScrollY.current && y > 100) {
-        setIsHidden(true);
-      } else if (y < lastScrollY.current) {
-        setIsHidden(false);
-      }
-      lastScrollY.current = y;
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isOpen]);
 
   return (
-    <motion.header
-      ref={headerRef}
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+    <header
       className={cn(
-        "bg-background/100 border-border fixed top-0 right-0 left-0 z-50 h-24 border-b backdrop-blur-sm transition-transform duration-500 ease-in-out md:h-28",
-        isHidden && "-translate-y-full",
+        "bg-background/100 border-border sticky top-0 z-50 h-24 border-b backdrop-blur-sm md:h-28",
       )}
     >
       <nav className="container mx-auto h-full px-4">
@@ -121,7 +82,7 @@ export default function Navigation() {
         </div>
 
         {isOpen && (
-          <div className="border-border animate-fade-in bg-background h-screen border-t py-6 md:hidden">
+          <div className="border-border bg-background h-screen border-t py-6 md:hidden">
             <div className="flex flex-col gap-6 px-4">
               {navLinks.map((link) => (
                 <Link
@@ -142,6 +103,6 @@ export default function Navigation() {
           </div>
         )}
       </nav>
-    </motion.header>
+    </header>
   );
 }
