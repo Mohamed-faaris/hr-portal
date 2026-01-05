@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <Layout>
       <section className="bg-primary text-primary-foreground relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden pt-20 pb-16">
-        <div className="from-primary via-primary absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] to-[#051530]" />
+        <div className="from-primary via-primary absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] to-[#051530]" />
         <div
           className="absolute inset-0 opacity-[0.15]"
           style={{
