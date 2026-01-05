@@ -1,4 +1,4 @@
-import { Applicant } from '../types';
+import type { Applicant } from '../types';
 
 export const MOCK_APPLICANTS: Applicant[] = [
   // --- ORIGINAL APPLICANTS (Updated Job Links) ---

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { ArrowRight, Users, Target, Award, Briefcase } from "lucide-react";
@@ -5,146 +7,200 @@ import IndustriesSection from "~/components/sections/IndustriesSection";
 import LatestJobsSection from "~/components/sections/LatestJobsSection";
 import ClienteleSection from "~/components/sections/ClienteleSection";
 import Layout from "~/components/Layout";
+import { motion } from "framer-motion";
+import { fadeInUp, fadeIn, staggerContainer } from "~/lib/animations";
 
 export default function HomePage() {
   return (
     <Layout>
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center bg-primary text-primary-foreground overflow-hidden pt-20 pb-16">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary via-primary to-[#051530]" />
-        <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
+      <section className="bg-primary text-primary-foreground relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden pt-20 pb-16">
+        <div className="from-primary via-primary absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] to-[#051530]" />
+        <div
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+        <div className="pointer-events-none absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-500/20 blur-[100px]" />
+        <div className="bg-accent/10 pointer-events-none absolute right-1/4 bottom-0 h-96 w-96 rounded-full blur-[100px]" />
 
-        <div className="relative z-10 container-wide text-center">
-          <div className="opacity-0 animate-slide-up" style={{ animationDelay: "100ms" }}>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 max-w-5xl mx-auto tracking-tight leading-tight drop-shadow-lg">
+        <motion.div
+          className="container-wide relative z-10 text-center"
+          initial="initial"
+          animate="animate"
+          variants={staggerContainer()}
+        >
+          <motion.div variants={fadeInUp} transition={{ delay: 0.1 }}>
+            <h1 className="mx-auto mb-6 max-w-5xl text-4xl leading-tight font-bold tracking-tight drop-shadow-lg md:text-6xl lg:text-7xl">
               Building Bridges to Professional Dreams
             </h1>
-          </div>
+          </motion.div>
 
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "200ms" }}>
-            <p className="text-xl md:text-2xl text-primary-foreground/90 font-light mb-6 max-w-3xl mx-auto">
-              Empowering Talent, Connecting Opportunities. <br className="hidden md:block" />
+          <motion.div variants={fadeIn} transition={{ delay: 0.2 }}>
+            <p className="text-primary-foreground/90 mx-auto mb-6 max-w-3xl text-xl font-light md:text-2xl">
+              Empowering Talent, Connecting Opportunities.{" "}
+              <br className="hidden md:block" />
               Your Trusted HR Partner in South Tamil Nadu.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "300ms" }}>
-            <p className="text-base md:text-lg text-primary-foreground/70 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Premier recruitment experts delivering tailored placement services.
-              Specializing in talent sourcing, skill enhancement training, resume optimization,
-              and interview coaching.
+          <motion.div variants={fadeIn} transition={{ delay: 0.3 }}>
+            <p className="text-primary-foreground/70 mx-auto mb-10 max-w-3xl text-base leading-relaxed md:text-lg">
+              Premier recruitment experts delivering tailored placement
+              services. Specializing in talent sourcing, skill enhancement
+              training, resume optimization, and interview coaching.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20 opacity-0 animate-fade-in" style={{ animationDelay: "400ms" }}>
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100 font-bold text-lg px-8 h-14 border-none shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
-              <Link href="/jobs">
-                Start Your Journey
-              </Link>
+          <motion.div
+            className="mb-20 flex flex-col justify-center gap-4 sm:flex-row"
+            variants={fadeIn}
+            transition={{ delay: 0.4 }}
+          >
+            <Button
+              asChild
+              size="lg"
+              className="text-primary h-14 border-none bg-white px-8 text-lg font-bold shadow-xl transition-all hover:-translate-y-1 hover:bg-gray-100 hover:shadow-2xl"
+            >
+              <Link href="/jobs">Start Your Journey</Link>
             </Button>
 
             <Button
               asChild
               variant="outline"
               size="lg"
-              className="bg-transparent border-2 border-white/20 text-white hover:bg-white/10 hover:text-white font-semibold text-lg px-8 h-14 backdrop-blur-sm"
+              className="h-14 border-2 border-white/20 bg-transparent px-8 text-lg font-semibold text-white backdrop-blur-sm hover:bg-white/10 hover:text-white"
             >
               <Link href="/contact">Get in Touch</Link>
             </Button>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto border-t border-white/10 pt-12 opacity-0 animate-slide-up" style={{ animationDelay: "500ms" }}>
+          <motion.div
+            className="mx-auto grid max-w-5xl grid-cols-1 gap-12 border-t border-white/10 pt-12 md:grid-cols-3"
+            variants={fadeInUp}
+            transition={{ delay: 0.5 }}
+          >
             <div className="text-center">
-              <div className="text-5xl md:text-6xl font-bold mb-2 tracking-tighter drop-shadow-md">100+</div>
-              <div className="text-xs md:text-sm font-semibold tracking-[0.2em] text-primary-foreground/60 uppercase">
+              <div className="mb-2 text-5xl font-bold tracking-tighter drop-shadow-md md:text-6xl">
+                100+
+              </div>
+              <div className="text-primary-foreground/60 text-xs font-semibold tracking-[0.2em] uppercase md:text-sm">
                 Successful Placements
               </div>
             </div>
 
             <div className="text-center">
-              <div className="text-5xl md:text-6xl font-bold mb-2 tracking-tighter drop-shadow-md">17</div>
-              <div className="text-xs md:text-sm font-semibold tracking-[0.2em] text-primary-foreground/60 uppercase">
+              <div className="mb-2 text-5xl font-bold tracking-tighter drop-shadow-md md:text-6xl">
+                17
+              </div>
+              <div className="text-primary-foreground/60 text-xs font-semibold tracking-[0.2em] uppercase md:text-sm">
                 Clients Served
               </div>
             </div>
 
             <div className="text-center">
-              <div className="text-5xl md:text-6xl font-bold mb-2 tracking-tighter drop-shadow-md">2025</div>
-              <div className="text-xs md:text-sm font-semibold tracking-[0.2em] text-primary-foreground/60 uppercase">
+              <div className="mb-2 text-5xl font-bold tracking-tighter drop-shadow-md md:text-6xl">
+                2025
+              </div>
+              <div className="text-primary-foreground/60 text-xs font-semibold tracking-[0.2em] uppercase md:text-sm">
                 Established
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       <LatestJobsSection />
 
       <section className="section-padding bg-amber-50">
         <div className="container-wide">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <motion.div
+            className="mb-12 text-center"
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer()}
+          >
+            <motion.h2
+              className="text-foreground mb-4 text-3xl font-bold md:text-4xl"
+              variants={fadeInUp}
+            >
               Who We Are
-            </h2>
-            <div className="w-20 h-1 bg-primary mx-auto" />
-          </div>
+            </motion.h2>
+            <motion.div
+              className="bg-primary mx-auto h-1 w-20"
+              variants={fadeInUp}
+            />
+          </motion.div>
 
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <p className="text-lg text-muted-foreground leading-relaxed">
+          <motion.div
+            className="mx-auto mb-16 max-w-3xl text-center"
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+          >
+            <p className="text-muted-foreground text-lg leading-relaxed">
               Dharvista is a recruitment agency headquartered in Aruppukottai,
-              Virudhunagar District, Tamil Nadu. We specialize in bridging skilled
-              talent from rural and semi-urban areas with opportunities across
-              local and global industries.
+              Virudhunagar District, Tamil Nadu. We specialize in bridging
+              skilled talent from rural and semi-urban areas with opportunities
+              across local and global industries.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div
+            className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4"
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer()}
+          >
             {[
               {
                 title: "Expert Team",
                 desc: "Seasoned professionals with deep industry knowledge",
-                icon: Users
+                icon: Users,
               },
               {
                 title: "Precision Matching",
                 desc: "Tailored solutions for perfect candidate-client fit",
-                icon: Target
+                icon: Target,
               },
               {
                 title: "Proven Results",
                 desc: "Track record of successful placements across sectors",
-                icon: Award
+                icon: Award,
               },
               {
                 title: "Industry Reach",
                 desc: "Serving Fireworks, Textile, IT, and Medical industries",
-                icon: Briefcase
+                icon: Briefcase,
               },
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div
+                <motion.div
                   key={index}
-                  className="opacity-0 animate-slide-up group relative rounded-2xl border border-amber-100 bg-white p-10 text-center transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:border-accent/30"
-                  style={{ animationDelay: `${100 + index * 75}ms` }}
+                  className="group hover:border-accent/30 relative rounded-2xl border border-amber-100 bg-white p-10 text-center transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl"
+                  variants={fadeInUp}
                 >
                   <div className="relative z-10 mb-6 flex justify-center">
-                    <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary group-hover:scale-110">
-                      <Icon className="h-10 w-10 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                    <div className="bg-primary/10 group-hover:bg-primary flex h-20 w-20 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110">
+                      <Icon className="text-primary group-hover:text-primary-foreground h-10 w-10 transition-colors duration-300" />
                     </div>
                   </div>
 
-                  <h3 className="relative z-10 font-bold text-xl mb-3 text-gray-900">
+                  <h3 className="relative z-10 mb-3 text-xl font-bold text-gray-900">
                     {item.title}
                   </h3>
-                  <p className="relative z-10 text-gray-500 text-base leading-relaxed">
+                  <p className="relative z-10 text-base leading-relaxed text-gray-500">
                     {item.desc}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -154,15 +210,20 @@ export default function HomePage() {
         <ClienteleSection />
       </div>
 
-      <section className="section-padding bg-amber-50 border-t border-amber-100">
+      <section className="section-padding border-t border-amber-100 bg-amber-50">
         <div className="container-wide text-center">
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "150ms" }}>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15, duration: 0.6 }}
+          >
+            <h2 className="text-foreground mb-4 text-3xl font-bold md:text-4xl">
               Ready to Find Your Next Opportunity?
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Browse our current openings or get in touch with our team to discuss
-              your career aspirations.
+            <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg">
+              Browse our current openings or get in touch with our team to
+              discuss your career aspirations.
             </p>
             <Button asChild size="lg">
               <Link href="/jobs">
@@ -170,7 +231,7 @@ export default function HomePage() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
     </Layout>

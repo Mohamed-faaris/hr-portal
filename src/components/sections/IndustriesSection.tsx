@@ -1,8 +1,23 @@
-import { 
-  Stethoscope, Utensils, ShoppingBag, Car, HardHat, 
-  Headphones, TrendingUp, GraduationCap, Wrench, 
-  Factory, Shirt, Rocket, Building2, Store 
+"use client";
+
+import {
+  Stethoscope,
+  Utensils,
+  ShoppingBag,
+  Car,
+  HardHat,
+  Headphones,
+  TrendingUp,
+  GraduationCap,
+  Wrench,
+  Factory,
+  Shirt,
+  Rocket,
+  Building2,
+  Store,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { fadeInUp, staggerContainer } from "~/lib/animations";
 
 const industries = [
   { name: "Medical / Healthcare", icon: Stethoscope },
@@ -25,38 +40,58 @@ export default function IndustriesSection() {
   return (
     <section className="section-padding bg-background">
       <div className="container-wide">
-        
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <motion.div
+          className="mb-16 text-center"
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer(0.05)}
+        >
+          <motion.h2
+            className="text-foreground mb-4 text-3xl font-bold md:text-4xl"
+            variants={fadeInUp}
+          >
             Industries We Serve
-          </h2>
-          <div className="w-20 h-1 bg-primary mx-auto mb-6" />
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Our placement solutions office demonstrates strong industry expertise by delivering structured, compliant, and results-driven recruitment services across multiple sectors.
-          </p>
-        </div>
+          </motion.h2>
+          <motion.div
+            className="bg-primary mx-auto mb-6 h-1 w-20"
+            variants={fadeInUp}
+          />
+          <motion.p
+            className="text-muted-foreground mx-auto max-w-3xl text-lg leading-relaxed"
+            variants={fadeInUp}
+          >
+            Our placement solutions office demonstrates strong industry
+            expertise by delivering structured, compliant, and results-driven
+            recruitment services across multiple sectors.
+          </motion.p>
+        </motion.div>
 
-        {/* 🟢 UPDATED GRID: lg:grid-cols-4 */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <motion.div
+          className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4"
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer(0.05)}
+        >
           {industries.map((item, index) => {
             const Icon = item.icon;
             return (
-              <div 
-                key={index} 
-                className="opacity-0 animate-slide-up group flex flex-col items-center justify-center p-10 rounded-2xl bg-white border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 min-h-[220px]"
-                style={{ animationDelay: `${index * 50}ms` }}
+              <motion.div
+                key={index}
+                className="group border-border flex min-h-[220px] flex-col items-center justify-center rounded-2xl border bg-white p-10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                variants={fadeInUp}
               >
-                <div className="h-16 w-16 bg-primary/5 rounded-full flex items-center justify-center mb-6 transition-all duration-300 group-hover:bg-primary group-hover:scale-110">
-                  <Icon className="h-8 w-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                <div className="bg-primary/5 group-hover:bg-primary mb-6 flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110">
+                  <Icon className="text-primary group-hover:text-primary-foreground h-8 w-8 transition-colors duration-300" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground text-center group-hover:text-primary transition-colors">
+                <h3 className="text-foreground group-hover:text-primary text-center text-lg font-bold transition-colors">
                   {item.name}
                 </h3>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
-
+        </motion.div>
       </div>
     </section>
   );

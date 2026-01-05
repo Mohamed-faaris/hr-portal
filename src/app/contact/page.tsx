@@ -9,6 +9,8 @@ import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { Mail, Phone, MapPin, Linkedin, Instagram, MessageCircle, ExternalLink } from "lucide-react";
 import FloatingWhatsApp from "~/components/FloatingWhatsApp";
+import { motion } from "framer-motion";
+import { fadeInUp, fadeIn, staggerContainer } from "~/lib/animations";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -41,16 +43,21 @@ export default function Contact() {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="relative z-10 container-wide text-center">
-          <div className="opacity-0 animate-slide-up" style={{ animationDelay: "100ms" }}>
+        <motion.div
+          className="relative z-10 container-wide text-center"
+          initial="initial"
+          animate="animate"
+          variants={staggerContainer()}
+        >
+          <motion.div variants={fadeInUp}>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Contact Us</h1>
-          </div>
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "150ms" }}>
+          </motion.div>
+          <motion.div variants={fadeIn}>
             <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto">
               Get in touch with our team to discuss your requirements
             </p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Content */}
@@ -59,7 +66,12 @@ export default function Contact() {
           <div className="grid lg:grid-cols-2 gap-12">
             
             {/* Left Column: Contact Form */}
-            <div className="opacity-0 animate-slide-up" style={{ animationDelay: "200ms" }}>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
               <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -104,10 +116,15 @@ export default function Contact() {
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
-            </div>
+            </motion.div>
 
             {/* Right Column: Contact Info */}
-            <div className="opacity-0 animate-fade-in" style={{ animationDelay: "250ms" }}>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
               <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
               <div className="space-y-6">
                 

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 import logo from "~/assets/dharvista-logo.jpg";
 
@@ -27,12 +28,12 @@ export default function Navigation() {
   useEffect(() => {
     function updateNavTop() {
       const h = headerRef.current?.offsetHeight ?? 96;
-      const topValue = isHidden ? '0px' : `${h}px`;
-      document.documentElement.style.setProperty('--nav-top', topValue);
+      const topValue = isHidden ? "0px" : `${h}px`;
+      document.documentElement.style.setProperty("--nav-top", topValue);
     }
     updateNavTop();
-    window.addEventListener('resize', updateNavTop);
-    return () => window.removeEventListener('resize', updateNavTop);
+    window.addEventListener("resize", updateNavTop);
+    return () => window.removeEventListener("resize", updateNavTop);
   }, [isHidden, isOpen]);
 
   useEffect(() => {
@@ -55,17 +56,20 @@ export default function Navigation() {
   }, [isOpen]);
 
   return (
-    <header
+    <motion.header
       ref={headerRef}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 bg-background/100 backdrop-blur-sm border-b border-border transition-transform duration-500 ease-in-out h-24 md:h-28",
-        isHidden && "-translate-y-full"
+        "bg-background/100 border-border fixed top-0 right-0 left-0 z-50 h-24 border-b backdrop-blur-sm transition-transform duration-500 ease-in-out md:h-28",
+        isHidden && "-translate-y-full",
       )}
     >
-      <nav className="container mx-auto px-4 h-full">
-        <div className="flex items-center justify-between h-full">
-          <Link href="/" className="flex items-center gap-4 group py-2">
-            <div className="relative overflow-hidden h-16 w-16 md:h-20 md:w-20 transition-transform duration-300 group-hover:scale-105">
+      <nav className="container mx-auto h-full px-4">
+        <div className="flex h-full items-center justify-between">
+          <Link href="/" className="group flex items-center gap-4 py-2">
+            <div className="relative h-16 w-16 overflow-hidden transition-transform duration-300 group-hover:scale-105 md:h-20 md:w-20">
               <Image
                 src={logo}
                 alt="Dharvista Logo"
@@ -75,39 +79,41 @@ export default function Navigation() {
               />
             </div>
             <span
-              className="text-2xl md:text-3xl text-primary uppercase"
+              className="text-primary text-2xl uppercase md:text-3xl"
               style={{
                 fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
                 fontWeight: 900,
-                letterSpacing: '1.5px'
+                letterSpacing: "1.5px",
               }}
             >
               DHARVISTA
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden items-center gap-8 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "nav-link text-sm uppercase tracking-wider font-semibold text-gray-600 hover:text-primary transition-all duration-300 relative group py-2",
-                  pathname === link.href && "text-primary"
+                  "nav-link hover:text-primary group relative py-2 text-sm font-semibold tracking-wider text-gray-600 uppercase transition-all duration-300",
+                  pathname === link.href && "text-primary",
                 )}
               >
                 {link.label}
-                <span className={cn(
-                  "absolute bottom-0 left-0 w-0 h-1 bg-accent transition-all duration-300 group-hover:w-full rounded-full",
-                  pathname === link.href && "w-full"
-                )}/>
+                <span
+                  className={cn(
+                    "bg-accent absolute bottom-0 left-0 h-1 w-0 rounded-full transition-all duration-300 group-hover:w-full",
+                    pathname === link.href && "w-full",
+                  )}
+                />
               </Link>
             ))}
           </div>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-foreground hover:bg-gray-100 rounded-md transition-colors"
+            className="text-foreground rounded-md p-2 transition-colors hover:bg-gray-100 md:hidden"
             aria-label="Toggle menu"
           >
             {isOpen ? <X className="h-8 w-8" /> : <Menu className="h-8 w-8" />}
@@ -115,7 +121,7 @@ export default function Navigation() {
         </div>
 
         {isOpen && (
-          <div className="md:hidden py-6 border-t border-border animate-fade-in bg-background h-screen">
+          <div className="border-border animate-fade-in bg-background h-screen border-t py-6 md:hidden">
             <div className="flex flex-col gap-6 px-4">
               {navLinks.map((link) => (
                 <Link
@@ -123,8 +129,10 @@ export default function Navigation() {
                   href={link.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "text-lg font-medium border-b border-gray-50 pb-2",
-                    pathname === link.href ? "text-primary border-accent" : "text-gray-600"
+                    "border-b border-gray-50 pb-2 text-lg font-medium",
+                    pathname === link.href
+                      ? "text-primary border-accent"
+                      : "text-gray-600",
                   )}
                 >
                   {link.label}
@@ -134,6 +142,6 @@ export default function Navigation() {
           </div>
         )}
       </nav>
-    </header>
+    </motion.header>
   );
 }
