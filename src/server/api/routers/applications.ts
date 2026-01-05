@@ -1,8 +1,42 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
 import { applications } from "~/server/db/schema";
+import { desc, eq } from "drizzle-orm";
 
 export const applicationsRouter = createTRPCRouter({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.applications.findMany({
+      orderBy: [desc(applications.appliedAt)],
+    });
+  }),
+
+  updateStatus: protectedProcedure
+    .input(z.object({
+      id: z.string().uuid(),
+      status: z.enum(['new', 'contacted', 'hired', 'rejected']),
+      notes: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...updates } = input;
+      return await ctx.db
+        .update(applications)
+        .set({
+          ...updates,
+          updatedAt: new Date(),
+        })
+        .where(eq(applications.id, id))
+        .returning();
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .delete(applications)
+        .where(eq(applications.id, input.id))
+        .returning();
+    }),
+
   create: publicProcedure
     .input(
       z.object({

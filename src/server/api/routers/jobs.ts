@@ -1,9 +1,63 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
 import { jobs } from "~/server/db/schema";
 import { desc, eq, and, sql } from "drizzle-orm";
 
 export const jobsRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input(z.object({
+      title: z.string().min(1),
+      location: z.string().optional(),
+      industry: z.string().optional(),
+      description: z.string().optional(),
+      eligibility: z.string().optional(),
+      salaryMin: z.number().optional().nullable(),
+      salaryMax: z.number().optional().nullable(),
+      experienceMin: z.number().optional(),
+      experienceMax: z.number().optional(),
+      type: z.string(),
+      priority: z.string(),
+      status: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { ...values } = input;
+      return await ctx.db.insert(jobs).values({
+        ...values,
+        createdBy: ctx.session.user.id,
+      }).returning();
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .delete(jobs)
+        .where(eq(jobs.id, input.id))
+        .returning();
+    }),
+
+  updateStatus: protectedProcedure
+    .input(z.object({
+      id: z.string().uuid(),
+      status: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .update(jobs)
+        .set({
+          status: input.status,
+          updatedAt: new Date(),
+        })
+        .where(eq(jobs.id, input.id))
+        .returning();
+    }),
+
+  getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.jobs.findMany({
+      orderBy: [desc(jobs.createdAt)],
+    });
+  }),
+
   getAll: publicProcedure
     .input(
       z.object({
