@@ -9,7 +9,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
 import { UploadCloud, FileText, X, Loader2, CheckCircle2, User, MapPin, Briefcase, Paperclip } from "lucide-react";
-import { Job } from "~/types";
+import type { Job } from "~/types";
 
 interface JobApplicationModalProps {
   job: Job;
