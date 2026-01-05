@@ -9,7 +9,7 @@ const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  lint: {
+  eslint: {
     ignoreDuringBuilds: true,
   },
 };
