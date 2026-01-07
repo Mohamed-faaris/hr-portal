@@ -19,6 +19,8 @@ export const jobsRouter = createTRPCRouter({
       type: z.string(),
       priority: z.string(),
       status: z.string(),
+      configId: z.string().uuid().optional(),
+      config: z.record(z.enum(['required', 'shown', 'hidden'])).optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       const { ...values } = input;
@@ -122,7 +124,7 @@ export const jobsRouter = createTRPCRouter({
       const job = await ctx.db.query.jobs.findFirst({
         where: eq(jobs.id, input.id),
       });
-      
+
       if (!job) {
         throw new Error('Job not found');
       }

@@ -57,7 +57,7 @@ export const verification = pgTable('verification', {
   updatedAt: timestamp('updatedAt'),
 })
 
-export const DEFAULT_JOB_CONFIG  = {
+export const DEFAULT_JOB_CONFIG = {
   fullName: 'required',
   email: 'required',
   phone: 'required',
@@ -79,7 +79,7 @@ export const DEFAULT_JOB_CONFIG  = {
   linkedinProfile: 'shown',
   portfolio: 'shown',
   resumeUrl: 'required',
-} as Record<string, "required" | "shown" | "hidden" >;
+} as Record<string, "required" | "shown" | "hidden">;
 
 // Job listings table
 export const jobs = pgTable('jobs', {
@@ -98,6 +98,7 @@ export const jobs = pgTable('jobs', {
   status: text('status').notNull().default('draft'), // 'draft' | 'published' | 'closed'
   priority: text('priority').notNull().default('normal'), // 'normal' | 'featured' | 'urgent'
   googleFormUrl: text('google_form_url'),
+  configId: uuid('config_id').references(() => jobConfigs.id, { onDelete: 'set null' }),
   config: jsonb('config').$type<Record<string, 'required' | 'shown' | 'hidden'>>().notNull().default(DEFAULT_JOB_CONFIG),
   createdBy: text('created_by').references(() => user.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),

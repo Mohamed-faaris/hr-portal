@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -20,6 +20,7 @@ import {
   MoreVertical,
   Trash2,
   Lock,
+  Settings,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -48,6 +49,13 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import { toast } from "sonner";
 import { api } from "~/trpc/react";
 import { authClient } from "~/server/better-auth/client";
@@ -70,9 +78,35 @@ const INDUSTRIES = [
   "Start-Ups",
 ];
 
+const FIELD_NAMES = [
+  { key: "fullName", label: "Full Name" },
+  { key: "email", label: "Email" },
+  { key: "phone", label: "Phone" },
+  { key: "gender", label: "Gender" },
+  { key: "dateOfBirth", label: "Date of Birth" },
+  { key: "currentLocation", label: "Current Location" },
+  { key: "preferredWorkLocation", label: "Preferred Work Location" },
+  { key: "totalExperience", label: "Total Experience" },
+  { key: "currentCompany", label: "Current Company" },
+  { key: "currentDesignation", label: "Current Designation" },
+  { key: "currentSalary", label: "Current Salary" },
+  { key: "expectedSalary", label: "Expected Salary" },
+  { key: "noticePeriod", label: "Notice Period" },
+  { key: "highestQualification", label: "Highest Qualification" },
+  { key: "specialization", label: "Specialization" },
+  { key: "university", label: "University" },
+  { key: "keySkills", label: "Key Skills" },
+  { key: "preferredJobType", label: "Preferred Job Type" },
+  { key: "linkedinProfile", label: "LinkedIn Profile" },
+  { key: "portfolio", label: "Portfolio" },
+  { key: "resumeUrl", label: "Resume Upload" },
+];
+
 export default function AdminDashboardClient() {
   const router = useRouter();
-  const [activeView, setActiveView] = useState<"jobs" | "applicants">("jobs");
+  const [activeView, setActiveView] = useState<
+    "jobs" | "applicants" | "configs"
+  >("jobs");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const utils = api.useUtils();
@@ -80,6 +114,8 @@ export default function AdminDashboardClient() {
     api.jobs.getAllAdmin.useQuery();
   const { data: applicants = [], isLoading: appLoading } =
     api.applications.getAll.useQuery();
+  const { data: configs = [], isLoading: configsLoading } =
+    api.jobConfigs.getAll.useQuery();
 
   const createJobMutation = api.jobs.create.useMutation({
     onSuccess: () => {
@@ -113,6 +149,30 @@ export default function AdminDashboardClient() {
       },
       onError: (err) => toast.error(err.message),
     });
+
+  const createConfigMutation = api.jobConfigs.create.useMutation({
+    onSuccess: () => {
+      toast.success("Config created successfully!");
+      void utils.jobConfigs.getAll.invalidate();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const deleteConfigMutation = api.jobConfigs.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Config deleted successfully!");
+      void utils.jobConfigs.getAll.invalidate();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const updateConfigMutation = api.jobConfigs.update.useMutation({
+    onSuccess: () => {
+      toast.success("Config updated successfully!");
+      void utils.jobConfigs.getAll.invalidate();
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   const handleLogout = async () => {
     await authClient.signOut({
@@ -148,6 +208,18 @@ export default function AdminDashboardClient() {
       >
         <Users className="mr-2 h-4 w-4" />
         Applicants
+      </Button>
+
+      <Button
+        variant={activeView === "configs" ? "secondary" : "ghost"}
+        className="w-full justify-start"
+        onClick={() => {
+          setActiveView("configs");
+          setIsMobileMenuOpen(false);
+        }}
+      >
+        <Settings className="mr-2 h-4 w-4" />
+        Application Configs
       </Button>
     </nav>
   );
@@ -241,13 +313,16 @@ export default function AdminDashboardClient() {
             <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
               {activeView === "jobs"
                 ? "Jobs Overview"
-                : "Candidate Applications"}
+                : activeView === "applicants"
+                  ? "Candidate Applications"
+                  : "Application Form Configs"}
             </h1>
           </div>
 
           {activeView === "jobs" ? (
             <JobsView
               jobs={jobs}
+              configs={configs}
               createJob={(data) => createJobMutation.mutate(data)}
               deleteJob={(id) => deleteJobMutation.mutate({ id })}
               updateStatus={(id, status) =>
@@ -255,7 +330,7 @@ export default function AdminDashboardClient() {
               }
               loading={jobsLoading}
             />
-          ) : (
+          ) : activeView === "applicants" ? (
             <ApplicantsView
               applicants={applicants}
               jobs={jobs}
@@ -263,6 +338,14 @@ export default function AdminDashboardClient() {
               updateStatus={(id, status) =>
                 updateApplicantStatusMutation.mutate({ id, status })
               }
+            />
+          ) : (
+            <ConfigsView
+              configs={configs}
+              createConfig={(data) => createConfigMutation.mutate(data)}
+              deleteConfig={(id) => deleteConfigMutation.mutate({ id })}
+              updateConfig={(data) => updateConfigMutation.mutate(data)}
+              loading={configsLoading}
             />
           )}
         </div>
@@ -274,7 +357,14 @@ export default function AdminDashboardClient() {
 // ----------------------------------------------------------------------
 // JOBS VIEW COMPONENT
 // ----------------------------------------------------------------------
-function JobsView({ jobs, createJob, deleteJob, updateStatus, loading }: any) {
+function JobsView({
+  jobs,
+  configs,
+  createJob,
+  deleteJob,
+  updateStatus,
+  loading,
+}: any) {
   const [newJob, setNewJob] = useState({
     title: "",
     location: "",
@@ -288,14 +378,28 @@ function JobsView({ jobs, createJob, deleteJob, updateStatus, loading }: any) {
     type: "full-time",
     priority: "normal",
     status: "published",
+    configId: "" as string | undefined,
   });
+
+  const [customConfig, setCustomConfig] = useState<Record<
+    string,
+    "required" | "shown" | "hidden"
+  > | null>(null);
+  const [isCustomConfigOpen, setIsCustomConfigOpen] = useState(false);
+
+  useEffect(() => {
+    if (configs && configs.length > 0 && !newJob.configId && !customConfig) {
+      setNewJob((prev) => ({ ...prev, configId: configs[0].id }));
+    }
+  }, [configs, newJob.configId, customConfig]);
 
   const handleAddJob = () => {
     if (!newJob.title || !newJob.location) {
       toast.error("Title and Location are required");
       return;
     }
-    createJob({
+
+    const payload = {
       ...newJob,
       salaryMin: newJob.salaryMin ? parseInt(newJob.salaryMin) : null,
       salaryMax: newJob.salaryMax ? parseInt(newJob.salaryMax) : null,
@@ -303,7 +407,12 @@ function JobsView({ jobs, createJob, deleteJob, updateStatus, loading }: any) {
       experienceMax: newJob.experienceMax
         ? parseInt(newJob.experienceMax)
         : null,
-    });
+      // If custom config exists, we don't send configId
+      ...(customConfig ? { config: customConfig, configId: undefined } : {}),
+    };
+
+    createJob(payload);
+
     setNewJob({
       title: "",
       location: "",
@@ -317,7 +426,9 @@ function JobsView({ jobs, createJob, deleteJob, updateStatus, loading }: any) {
       type: "full-time",
       priority: "normal",
       status: "published",
+      configId: configs?.[0]?.id,
     });
+    setCustomConfig(null);
   };
 
   if (loading)
@@ -439,6 +550,81 @@ function JobsView({ jobs, createJob, deleteJob, updateStatus, loading }: any) {
             className="h-32"
           />
 
+          <div className="space-y-4 rounded-lg border bg-gray-50/50 p-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold">
+                Application Form Configuration
+              </label>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsCustomConfigOpen(true)}
+                className={customConfig ? "border-primary text-primary" : ""}
+              >
+                {customConfig
+                  ? "Edit Custom Config"
+                  : "Create Custom For This Job"}
+              </Button>
+            </div>
+
+            {!customConfig ? (
+              <div className="space-y-2">
+                <Select
+                  value={newJob.configId || ""}
+                  onValueChange={(val) =>
+                    setNewJob({
+                      ...newJob,
+                      configId: val,
+                    })
+                  }
+                >
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select a configuration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {configs.length === 0 && (
+                      <SelectItem value="none" disabled>
+                        No configs found
+                      </SelectItem>
+                    )}
+                    {configs.map((config: any) => (
+                      <SelectItem key={config.id} value={config.id}>
+                        {config.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500">
+                  Choose from existing configurations or create a custom one.
+                </p>
+              </div>
+            ) : (
+              <div className="border-primary/20 flex items-center justify-between rounded-md border bg-white p-3">
+                <div className="flex items-center gap-2">
+                  <div className="bg-primary h-2 w-2 animate-pulse rounded-full" />
+                  <span className="text-sm font-medium">
+                    Using Custom Configuration
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setCustomConfig(null);
+                    if (configs?.[0])
+                      setNewJob((prev) => ({
+                        ...prev,
+                        configId: configs[0].id,
+                      }));
+                  }}
+                  className="h-8 text-red-500 hover:bg-red-50 hover:text-red-600"
+                >
+                  Reset to Default
+                </Button>
+              </div>
+            )}
+          </div>
+
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div className="flex w-full items-center space-x-2 rounded-md border bg-gray-50 px-4 py-2 md:w-auto">
               <input
@@ -466,6 +652,73 @@ function JobsView({ jobs, createJob, deleteJob, updateStatus, loading }: any) {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isCustomConfigOpen} onOpenChange={setIsCustomConfigOpen}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Custom Job Configuration</DialogTitle>
+            <DialogDescription>
+              Configure which fields are required, shown, or hidden for this
+              specific job.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            {FIELD_NAMES.map((field) => {
+              const currentValue = customConfig?.[field.key] || "shown";
+              return (
+                <div
+                  key={field.key}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
+                  <span className="text-sm font-medium">{field.label}</span>
+                  <div className="flex rounded-md bg-gray-100 p-1">
+                    {(["required", "shown", "hidden"] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={() =>
+                          setCustomConfig({
+                            ...(customConfig || {}),
+                            [field.key]: mode,
+                          })
+                        }
+                        className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                          currentValue === mode
+                            ? "text-primary bg-white shadow-sm"
+                            : "text-gray-500 hover:text-gray-700"
+                        }`}
+                      >
+                        {mode === "shown" ? "Show" : mode}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 flex justify-end gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setIsCustomConfigOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (!customConfig) {
+                  const initial: any = {};
+                  FIELD_NAMES.forEach((f) => (initial[f.key] = "shown"));
+                  setCustomConfig(initial);
+                }
+                setIsCustomConfigOpen(false);
+              }}
+            >
+              Apply Configuration
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="space-y-4">
         <h3 className="text-xl font-bold">Active Jobs ({jobs.length})</h3>
@@ -632,6 +885,274 @@ function ApplicantsView({ applicants, jobs, loading, updateStatus }: any) {
           </Card>
         );
       })}
+    </div>
+  );
+}
+// ----------------------------------------------------------------------
+// CONFIGS VIEW COMPONENT
+// ----------------------------------------------------------------------
+function ConfigsView({
+  configs,
+  createConfig,
+  deleteConfig,
+  updateConfig,
+  loading,
+}: any) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingConfig, setEditingConfig] = useState<any>(null);
+  const [currentConfig, setCurrentConfig] = useState({
+    name: "",
+    config: {} as Record<string, "required" | "shown" | "hidden">,
+  });
+
+  const handleOpenCreate = () => {
+    setEditingConfig(null);
+    setCurrentConfig({ name: "", config: {} });
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEdit = (config: any) => {
+    setEditingConfig(config);
+    setCurrentConfig({
+      name: config.name,
+      config: { ...config.config },
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleSave = () => {
+    if (!currentConfig.name) {
+      toast.error("Config name is required");
+      return;
+    }
+
+    if (editingConfig) {
+      updateConfig({
+        id: editingConfig.id,
+        name: currentConfig.name,
+        config: currentConfig.config,
+      });
+    } else {
+      createConfig(currentConfig);
+    }
+
+    setIsDialogOpen(false);
+  };
+
+  const updateField = (
+    fieldKey: string,
+    value: "required" | "shown" | "hidden",
+  ) => {
+    setCurrentConfig((prev) => ({
+      ...prev,
+      config: { ...prev.config, [fieldKey]: value },
+    }));
+  };
+
+  if (loading) {
+    return (
+      <div className="p-10 text-center text-gray-400">Loading configs...</div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Application Form Configurations</CardTitle>
+            <CardDescription>
+              Manage reusable templates for job application forms
+            </CardDescription>
+          </div>
+          <Button onClick={handleOpenCreate}>
+            <Plus className="mr-2 h-4 w-4" /> New Template
+          </Button>
+        </CardHeader>
+      </Card>
+
+      <div className="space-y-4">
+        <h3 className="text-xl font-bold">
+          Saved Templates ({configs.length})
+        </h3>
+        {configs.length === 0 && (
+          <p className="py-4 text-gray-500 italic">No templates created yet.</p>
+        )}
+        {configs.map((config: any) => (
+          <Card key={config.id} className="overflow-hidden">
+            <CardHeader className="bg-gray-50/50 py-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">{config.name}</CardTitle>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleOpenEdit(config)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                    onClick={() => {
+                      if (confirm(`Delete config "${config.name}"?`)) {
+                        deleteConfig(config.id);
+                      }
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
+                <div>
+                  <span className="mb-2 flex items-center gap-1 font-semibold text-green-600">
+                    <CheckCircle className="h-3 w-3" /> Required
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(config.config)
+                      .filter(([_, v]) => v === "required")
+                      .map(([k]) => (
+                        <Badge
+                          key={k}
+                          variant="default"
+                          className="px-1.5 py-0 text-[10px]"
+                        >
+                          {FIELD_NAMES.find((f) => f.key === k)?.label || k}
+                        </Badge>
+                      ))}
+                    {Object.entries(config.config).filter(
+                      ([_, v]) => v === "required",
+                    ).length === 0 && (
+                      <span className="text-xs text-gray-400 italic">None</span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <span className="mb-2 flex items-center gap-1 font-semibold text-blue-600">
+                    <Clock className="h-3 w-3" /> Optional
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(config.config)
+                      .filter(([_, v]) => v === "shown")
+                      .map(([k]) => (
+                        <Badge
+                          key={k}
+                          variant="secondary"
+                          className="px-1.5 py-0 text-[10px]"
+                        >
+                          {FIELD_NAMES.find((f) => f.key === k)?.label || k}
+                        </Badge>
+                      ))}
+                    {Object.entries(config.config).filter(
+                      ([_, v]) => v === "shown",
+                    ).length === 0 && (
+                      <span className="text-xs text-gray-400 italic">None</span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <span className="mb-2 flex items-center gap-1 font-semibold text-gray-500">
+                    <XCircle className="h-3 w-3" /> Hidden
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(config.config)
+                      .filter(([_, v]) => v === "hidden")
+                      .map(([k]) => (
+                        <Badge
+                          key={k}
+                          variant="outline"
+                          className="px-1.5 py-0 text-[10px] text-gray-400"
+                        >
+                          {FIELD_NAMES.find((f) => f.key === k)?.label || k}
+                        </Badge>
+                      ))}
+                    {Object.entries(config.config).filter(
+                      ([_, v]) => v === "hidden",
+                    ).length === 0 && (
+                      <span className="text-xs text-gray-400 italic">None</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingConfig ? "Edit Template" : "New Form Template"}
+            </DialogTitle>
+            <DialogDescription>
+              Define which fields should be required or optional in the
+              application form.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold">Template Name</label>
+              <Input
+                placeholder="e.g. Sales Executive Form, IT Dev Application"
+                value={currentConfig.name}
+                onChange={(e) =>
+                  setCurrentConfig({ ...currentConfig, name: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-semibold">Field Settings</label>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {FIELD_NAMES.map((field) => {
+                  const currentValue =
+                    currentConfig.config[field.key] || "hidden";
+                  return (
+                    <div
+                      key={field.key}
+                      className="flex items-center justify-between rounded-lg border bg-white p-3"
+                    >
+                      <span className="text-sm font-medium">{field.label}</span>
+                      <div className="flex rounded-md bg-gray-100 p-0.5">
+                        {(["required", "shown", "hidden"] as const).map(
+                          (mode) => (
+                            <button
+                              key={mode}
+                              onClick={() => updateField(field.key, mode)}
+                              className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                                currentValue === mode
+                                  ? "text-primary bg-white shadow-sm"
+                                  : "text-gray-500 hover:text-gray-700"
+                              }`}
+                            >
+                              {mode === "shown" ? "Optional" : mode}
+                            </button>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave}>
+              {editingConfig ? "Save Changes" : "Create Template"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

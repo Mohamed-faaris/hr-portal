@@ -22,6 +22,13 @@
       "when": 1767815869415,
       "tag": "0002_illegal_doomsday",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767816715573,
+      "tag": "0003_melodic_colossus",
+      "breakpoints": true
     }
   ]
 }

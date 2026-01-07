@@ -1,5 +1,6 @@
 import { jobsRouter } from "~/server/api/routers/jobs";
 import { applicationsRouter } from "~/server/api/routers/applications";
+import { jobConfigsRouter } from "~/server/api/routers/jobConfigs";
 import { todosRouter } from "~/server/api/routers/todos";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
@@ -11,6 +12,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   jobs: jobsRouter,
   applications: applicationsRouter,
+  jobConfigs: jobConfigsRouter,
   todos: todosRouter,
 });
 
