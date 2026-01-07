@@ -34,7 +34,9 @@ import {
 import { type inferRouterInputs } from "@trpc/server";
 import { type AppRouter } from "~/server/api/root";
 import { api } from "~/trpc/react";
-import { useUploadFile } from "@better-upload/client";
+import { useUploadFiles } from "@better-upload/client";
+import { UploadDropzoneProgress } from "~/components/ui/upload-dropzone-progress";
+import { type Job } from "~/types";
 
 interface JobApplicationModalProps {
   job: Job;
@@ -50,18 +52,11 @@ export function JobApplicationModal({
   const { toast } = useToast();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const createApplication = api.applications.create.useMutation();
-  const {
-    uploadAsync,
-    isPending: isUploading,
-    progress,
-    isError: isUploadError,
-    error: uploadError,
-  } = useUploadFile({
+  const { control, uploadedFiles, isPending: isUploading } = useUploadFiles({
     route: "resume",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [resume, setResume] = useState<File | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   // Form State
@@ -114,34 +109,6 @@ export function JobApplicationModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const validTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
-      if (!validTypes.includes(file.type)) {
-        toast({
-          title: "Invalid File Type",
-          description: "Please upload a PDF, DOC, or DOCX file.",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File Too Large",
-          description: "Resume size must be less than 5MB.",
-          variant: "destructive",
-        });
-        return;
-      }
-      setResume(file);
-    }
-  };
-
   const handleCaptchaChange = (token: string | null) => {
     setCaptchaToken(token);
   };
@@ -149,10 +116,11 @@ export function JobApplicationModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!resume) {
+    const firstFile = uploadedFiles[0];
+    if (!firstFile || firstFile.status !== "complete") {
       toast({
         title: "Resume Required",
-        description: "Please upload your resume.",
+        description: "Please wait for your resume to finish uploading.",
         variant: "destructive",
       });
       return;
@@ -170,24 +138,11 @@ export function JobApplicationModal({
     setIsSubmitting(true);
 
     try {
-      // Upload the resume to S3 via better-upload
-      const uploadedFile = await uploadAsync(resume).catch((err) => {
-        console.error("[UPLOAD_CLIENT_ERROR]", err);
-        toast({
-          title: "Upload Failed",
-          description:
-            err.message ||
-            "There was an error uploading your resume. Please try again.",
-          variant: "destructive",
-        });
-        throw err;
-      });
+      const resumeUrl = (firstFile.objectInfo as any).url as string;
 
-      if (!uploadedFile?.url) {
-        throw new Error("Failed to upload resume. Please try again.");
+      if (!resumeUrl) {
+        throw new Error("Failed to retrieve resume URL. Please try again.");
       }
-
-      const resumeUrl = uploadedFile.url;
 
       await createApplication.mutateAsync({
         jobId: job.id,
@@ -224,7 +179,6 @@ export function JobApplicationModal({
         linkedinProfile: "",
         portfolio: "",
       });
-      setResume(null);
       setCaptchaToken(null);
       recaptchaRef.current?.reset();
       onOpenChange(false);
@@ -444,7 +398,7 @@ export function JobApplicationModal({
                         {["Full-time", "Part-time", "Contract"].map((type) => (
                           <div
                             key={type}
-                            className="flex min-w-[100px] flex-1 items-center space-x-2 rounded-lg border border-stone-200 bg-white px-3 py-2 transition-colors hover:bg-stone-50 md:px-4 md:py-3"
+                            className="flex min-w-25 flex-1 items-center space-x-2 rounded-lg border border-stone-200 bg-white px-3 py-2 transition-colors hover:bg-stone-50 md:px-4 md:py-3"
                           >
                             <RadioGroupItem
                               value={type}
@@ -617,7 +571,7 @@ export function JobApplicationModal({
                         value={formData.keySkills}
                         onChange={handleInputChange}
                         placeholder="React, Java, Python..."
-                        className="min-h-[60px] resize-none border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        className="min-h-15 resize-none border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
                       />
                     </div>
                   )}
@@ -674,75 +628,15 @@ export function JobApplicationModal({
                       <span className="text-red-500">*</span>
                     )}
                   </Label>
-                  <div className="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-amber-200 bg-amber-50/30 p-4 text-center transition-colors hover:bg-amber-50 md:p-8">
-                    <Input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange}
-                      required={isFieldRequired("resumeUrl")}
-                      className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
-                    />
-
-                    {resume ? (
-                      <div className="flex flex-col items-center gap-2 text-green-700">
-                        <div className="rounded-full bg-green-100 p-2">
-                          <CheckCircle2 className="h-6 w-6" />
-                        </div>
-                        <span className="max-w-[200px] truncate text-sm font-medium">
-                          {resume.name}
-                        </span>
-                        {isUploading && (
-                          <div className="mt-1 w-full max-w-[240px]">
-                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
-                              <div
-                                className="h-full bg-amber-500 transition-all duration-300"
-                                style={{ width: `${progress * 100}%` }}
-                              />
-                            </div>
-                            <span className="mt-1 text-[10px] text-stone-400">
-                              Uploading... {Math.round(progress * 100)}%
-                            </span>
-                          </div>
-                        )}
-                        {isUploadError && (
-                          <div className="mt-2 flex flex-col items-center gap-1">
-                            <span className="text-[11px] font-semibold text-red-600">
-                              Upload Failed
-                            </span>
-                            <span className="line-clamp-2 px-4 text-center text-[10px] text-stone-500">
-                              {uploadError?.message ||
-                                "Please check your connection and try again."}
-                            </span>
-                          </div>
-                        )}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          disabled={isUploading}
-                          className="relative z-20 h-6 px-2 text-xs text-red-500 hover:bg-red-50 hover:text-red-600"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setResume(null);
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 transition-transform group-hover:scale-110 md:h-12 md:w-12">
-                          <UploadCloud className="h-5 w-5 md:h-6 md:w-6" />
-                        </div>
-                        <p className="text-sm font-medium text-stone-700">
-                          Click to upload or drag and drop
-                        </p>
-                        <p className="mt-1 text-xs text-stone-500">
-                          PDF, DOC, DOCX (Max 5MB)
-                        </p>
-                      </>
-                    )}
-                  </div>
+                  <UploadDropzoneProgress
+                    control={control}
+                    accept=".pdf,.doc,.docx"
+                    description={{
+                      maxFiles: 1,
+                      maxFileSize: "5MB",
+                      fileTypes: "PDF, DOC, DOCX",
+                    }}
+                  />
                 </div>
 
                 {/* Captcha */}
@@ -783,7 +677,7 @@ export function JobApplicationModal({
           <Button
             type="submit"
             form="job-app-form"
-            className="min-w-[120px] bg-amber-600 font-semibold text-white shadow-lg shadow-amber-600/20 hover:bg-amber-700 md:min-w-[160px]"
+            className="min-w-30 bg-amber-600 font-semibold text-white shadow-lg shadow-amber-600/20 hover:bg-amber-700 md:min-w-40"
             disabled={isSubmitting || isUploading}
           >
             {isSubmitting ? (

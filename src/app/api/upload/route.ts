@@ -1,17 +1,15 @@
 import { route, type Router } from '@better-upload/server';
 import { toRouteHandler } from '@better-upload/server/adapters/next';
-import { aws } from '@better-upload/server/clients';
+import { backblaze } from '@better-upload/server/clients';
 import { env } from "~/env";
 
 const router: Router = {
-    client: aws({
-        accessKeyId: env.S3_ACCESS_KEY_ID ?? "",
-        secretAccessKey: env.S3_SECRET_ACCESS_KEY ?? "",
+    client: backblaze({
         region: env.S3_REGION ?? "us-east-1",
-        endpoint: env.S3_ENDPOINT,
-        forcePathStyle: env.S3_FORCE_PATH_STYLE,
+        applicationKeyId: env.S3_ACCESS_KEY_ID,
+        applicationKey: env.S3_SECRET_ACCESS_KEY,
     }),
-    bucketName: env.S3_BUCKET_NAME ?? "hr-portal-resumes",
+    bucketName: env.S3_BUCKET_NAME,
     routes: {
         resume: route({
             fileTypes: [
@@ -21,10 +19,15 @@ const router: Router = {
             ],
             maxFileSize: 1024 * 1024 * 5, // 5MB
             onBeforeUpload: async ({ file }) => {
-                console.log(`[UPLOAD_REQUEST] Initiating resume upload: ${file.name} (${file.size} bytes)`);
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+                const key = `resume_${Date.now()}_${safeName}`;
+                const url = `https://${env.S3_BUCKET_NAME}.${env.S3_ENDPOINT.replace("https://", "")}/${key}`;
+
+                console.log(`[UPLOAD_REQUEST] Initiating resume upload: ${file.name} (${file.size} bytes) \nAssigned key: ${key}`);
                 return {
                     objectInfo: {
-                        key: `resume_${Date.now()}_${file.name}`,
+                        key,
+                        url,
                     },
                 };
             },

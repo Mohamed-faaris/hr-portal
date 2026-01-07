@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.2",
+    "@aws-sdk/client-s3": "^3.965.0",
     "@better-upload/client": "^3.0.12",
     "@better-upload/server": "^3.0.12",
     "@hookform/resolvers": "^5.2.2",
@@ -73,6 +74,7 @@
     "react": "^19.0.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
     "react-google-recaptcha": "^3.1.0",
     "react-hook-form": "^7.70.0",
     "react-resizable-panels": "^4.2.1",
