@@ -9,6 +9,7 @@ const router: Router = {
         secretAccessKey: env.S3_SECRET_ACCESS_KEY ?? "",
         region: env.S3_REGION ?? "us-east-1",
         endpoint: env.S3_ENDPOINT,
+        forcePathStyle: env.S3_FORCE_PATH_STYLE,
     }),
     bucketName: env.S3_BUCKET_NAME ?? "hr-portal-resumes",
     routes: {
@@ -27,3 +28,8 @@ const router: Router = {
                 console.log(`[UPLOAD_SIGNED_URL] Presigned URL generated for: ${file.name}`);
                 return {};
             },
+        }),
+    },
+};
+
+export const { POST } = toRouteHandler(router);

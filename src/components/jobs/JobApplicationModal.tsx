@@ -158,7 +158,7 @@ export function JobApplicationModal({
       return;
     }
 
-    if (!captchaToken) {
+    if (!captchaToken && process.env.NODE_ENV !== "development") {
       toast({
         title: "Verification Required",
         description: "Please complete the reCAPTCHA.",
@@ -191,7 +191,7 @@ export function JobApplicationModal({
 
       await createApplication.mutateAsync({
         jobId: job.id,
-        captchaToken: captchaToken,
+        captchaToken: captchaToken ?? "development-mode-bypass",
         resumeUrl: resumeUrl,
         ...formData,
       });
@@ -747,11 +747,22 @@ export function JobApplicationModal({
 
                 {/* Captcha */}
                 <div className="flex origin-center scale-90 justify-center pt-2 md:scale-100 md:pt-4">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
-                    onChange={handleCaptchaChange}
-                  />
+                  {process.env.NODE_ENV === "development" ? (
+                    <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-4 text-center">
+                      <span className="text-xs font-bold tracking-wider text-amber-600 uppercase">
+                        Developer Mode
+                      </span>
+                      <p className="text-[11px] text-amber-700">
+                        reCAPTCHA is optional in development.
+                      </p>
+                    </div>
+                  ) : (
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
+                      onChange={handleCaptchaChange}
+                    />
+                  )}
                 </div>
               </div>
             </div>
