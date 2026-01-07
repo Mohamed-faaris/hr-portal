@@ -6,7 +6,14 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { Search, MapPin, Briefcase, Flame, Loader2, ChevronDown } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Briefcase,
+  Flame,
+  Loader2,
+  ChevronDown,
+} from "lucide-react";
 import { FilterSelect } from "~/components/filters/FilterSelect";
 import Layout from "~/components/Layout";
 import { api } from "~/trpc/react";
@@ -45,20 +52,20 @@ export default function JobsPage() {
     <Layout>
       <section className="section-padding bg-gradient-to-b from-amber-50 to-white">
         <div className="container-wide">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <div className="mb-12 text-center">
+            <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">
               Current Job Openings
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
               Explore exciting career opportunities across multiple industries.
             </p>
           </div>
 
-          <Card className="border-none shadow-lg mb-12">
+          <Card className="mb-12 border-none shadow-lg">
             <CardContent className="p-6 md:p-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-2 relative">
-                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div className="relative md:col-span-2">
+                  <Search className="absolute top-2.5 left-3 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder="Search job title or keywords..."
                     className="pl-9"
@@ -85,7 +92,8 @@ export default function JobsPage() {
               {hasActiveFilters && (
                 <div className="mt-4 flex items-center justify-between">
                   <p className="text-sm text-gray-600">
-                    Showing {filteredJobs.length} {filteredJobs.length === 1 ? 'job' : 'jobs'}
+                    Showing {filteredJobs.length}{" "}
+                    {filteredJobs.length === 1 ? "job" : "jobs"}
                   </p>
                   <Button variant="ghost" size="sm" onClick={resetFilters}>
                     Clear Filters
@@ -97,58 +105,67 @@ export default function JobsPage() {
 
           {isLoading ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <Loader2 className="text-primary h-10 w-10 animate-spin" />
             </div>
           ) : filteredJobs.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-xl text-muted-foreground mb-2">No jobs found</p>
-              <p className="text-sm text-muted-foreground">
+            <div className="py-20 text-center">
+              <p className="text-muted-foreground mb-2 text-xl">
+                No jobs found
+              </p>
+              <p className="text-muted-foreground text-sm">
                 Try adjusting your filters or search terms.
               </p>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {visibleJobs.map((job) => (
                   <Card
                     key={job.id}
-                    className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-gray-200"
+                    className="group border-gray-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                   >
                     <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-3">
-                        <h3 className="font-bold text-lg text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+                      <div className="mb-3 flex items-start justify-between">
+                        <h3 className="group-hover:text-primary line-clamp-2 text-lg font-bold text-gray-900 transition-colors">
                           {job.title}
                         </h3>
-                        {job.priority === 'featured' && (
-                          <Badge variant="secondary" className="bg-amber-100 text-amber-800 border-amber-200">
-                            <Flame className="h-3 w-3 mr-1" />
+                        {job.priority === "featured" && (
+                          <Badge
+                            variant="secondary"
+                            className="border-amber-200 bg-amber-100 text-amber-800"
+                          >
+                            <Flame className="mr-1 h-3 w-3" />
                             Featured
                           </Badge>
                         )}
-                        {job.priority === 'urgent' && (
+                        {job.priority === "urgent" && (
                           <Badge variant="destructive">Urgent</Badge>
                         )}
                       </div>
 
-                      <div className="space-y-2 mb-4">
+                      <div className="mb-4 space-y-2">
                         <div className="flex items-center text-sm text-gray-600">
-                          <Briefcase className="h-4 w-4 mr-2 text-gray-400" />
+                          <Briefcase className="mr-2 h-4 w-4 text-gray-400" />
                           <span>{job.industry}</span>
                         </div>
                         <div className="flex items-center text-sm text-gray-600">
-                          <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                          <MapPin className="mr-2 h-4 w-4 text-gray-400" />
                           <span>{job.location}</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <span className="text-sm font-semibold text-primary">
-                          ₹{(job.salaryMin / 100000).toFixed(1)}L - ₹{(job.salaryMax / 100000).toFixed(1)}L
+                      <div className="flex items-center justify-between border-t pt-4">
+                        <span className="text-primary text-sm font-semibold">
+                          ₹{(job.salaryMin / 100000).toFixed(1)}L - ₹
+                          {(job.salaryMax / 100000).toFixed(1)}L
                         </span>
-                        <Button asChild variant="ghost" size="sm" className="group-hover:text-primary">
-                          <Link href={`/jobs/${job.id}`}>
-                            View Details →
-                          </Link>
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="sm"
+                          className="group-hover:text-primary"
+                        >
+                          <Link href={`/jobs/${job.id}`}>View Details →</Link>
                         </Button>
                       </div>
                     </CardContent>
@@ -161,7 +178,9 @@ export default function JobsPage() {
                   <Button
                     variant="outline"
                     size="lg"
-                    onClick={() => setVisibleCount(prev => prev + JOBS_PER_PAGE)}
+                    onClick={() =>
+                      setVisibleCount((prev) => prev + JOBS_PER_PAGE)
+                    }
                   >
                     Load More Jobs
                     <ChevronDown className="ml-2 h-4 w-4" />

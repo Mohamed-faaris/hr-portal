@@ -14,8 +14,8 @@ import {
   Heart,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import logo from "~/assets/dharvista-logo.jpg";
-import collabLogo from "~/assets/collabrate.jpg";
+const logo = "/assets/dharvista-logo.jpg";
+const collabLogo = "/assets/collabrate.jpg";
 import { motion } from "framer-motion";
 import { fadeInUp } from "~/lib/animations";
 

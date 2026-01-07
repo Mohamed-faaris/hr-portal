@@ -20,6 +20,8 @@ import FloatingWhatsApp from "~/components/FloatingWhatsApp";
 import { motion } from "framer-motion";
 import { fadeInUp, fadeIn, staggerContainer } from "~/lib/animations";
 
+export const dynamic = "force-static";
+
 export default function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);

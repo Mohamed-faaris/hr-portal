@@ -17,6 +17,8 @@ import ClienteleSection from "~/components/sections/ClienteleSection";
 import { motion } from "framer-motion";
 import { fadeInUp, fadeIn, staggerContainer } from "~/lib/animations";
 
+// export const dynamic = "force-static";
+
 const services = [
   {
     title: "Management & Administrative",

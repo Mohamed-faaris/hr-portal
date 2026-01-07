@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
 import { jobs } from "~/server/db/schema";
 import { desc, eq, and, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export const jobsRouter = createTRPCRouter({
   create: protectedProcedure
@@ -21,19 +22,33 @@ export const jobsRouter = createTRPCRouter({
     }))
     .mutation(async ({ ctx, input }) => {
       const { ...values } = input;
-      return await ctx.db.insert(jobs).values({
+      const result = await ctx.db.insert(jobs).values({
         ...values,
         createdBy: ctx.session.user.id,
       }).returning();
+
+      revalidatePath("/");
+      revalidatePath("/jobs");
+      if (result[0]) {
+        revalidatePath(`/jobs/${result[0].id}`);
+      }
+
+      return result;
     }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db
+      const result = await ctx.db
         .delete(jobs)
         .where(eq(jobs.id, input.id))
         .returning();
+
+      revalidatePath("/");
+      revalidatePath("/jobs");
+      revalidatePath(`/jobs/${input.id}`);
+
+      return result;
     }),
 
   updateStatus: protectedProcedure
@@ -42,7 +57,7 @@ export const jobsRouter = createTRPCRouter({
       status: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db
+      const result = await ctx.db
         .update(jobs)
         .set({
           status: input.status,
@@ -50,6 +65,12 @@ export const jobsRouter = createTRPCRouter({
         })
         .where(eq(jobs.id, input.id))
         .returning();
+
+      revalidatePath("/");
+      revalidatePath("/jobs");
+      revalidatePath(`/jobs/${input.id}`);
+
+      return result;
     }),
 
   getAllAdmin: protectedProcedure.query(async ({ ctx }) => {

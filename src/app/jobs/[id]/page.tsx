@@ -12,7 +12,18 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Layout from "~/components/Layout";
-import { api } from "~/trpc/server";
+import { db } from "~/server/db";
+import { jobs } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
+
+export async function generateStaticParams() {
+  const allJobs = await db.query.jobs.findMany({
+    where: eq(jobs.status, "published"),
+  });
+  return allJobs.map((job) => ({
+    id: job.id,
+  }));
+}
 
 export default async function JobDetailPage({
   params,
@@ -20,7 +31,9 @@ export default async function JobDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const job = await api.jobs.getById({ id });
+  const job = await db.query.jobs.findFirst({
+    where: eq(jobs.id, id),
+  });
 
   if (!job) {
     notFound();

@@ -1,70 +1,60 @@
 // src/mock/clients.ts
 
-// 🟢 1. IMPORTS (Matching your filenames)
-// Ensure these files are in src/assets/clients/
-import img1 from "~/assets/clients/company1.jpg";
-import img2 from "~/assets/clients/company2.jpg";
-import img3 from "~/assets/clients/company3.jpg";
-import img4 from "~/assets/clients/company4.jpg";
-import img5 from "~/assets/clients/company5.jpg";
-import img6 from "~/assets/clients/company6.jpg";
-import img7 from "~/assets/clients/company7.jpg";
-import img8 from "~/assets/clients/company8.jpg";
 
 export interface Client {
   id: string;
   name: string;
   industry: string;
-  logo: string; 
+  logo: string;
 }
 
 export const MOCK_CLIENTS: Client[] = [
-  { 
-    id: '1', 
-    name: 'Vwin Notebooks', 
-    industry: 'Manufacturing', 
-    logo: img1 
+  {
+    id: '1',
+    name: 'Vwin Notebooks',
+    industry: 'Manufacturing',
+    logo: 'assets/clients/company1.jpg'
   },
-  { 
-    id: '2', 
-    name: 'Bunty Toys', 
-    industry: 'Retail', 
-    logo: img2 
+  {
+    id: '2',
+    name: 'Bunty Toys',
+    industry: 'Retail',
+    logo: 'assets/clients/company2.jpg'
   },
-  { 
-    id: '3', 
-    name: 'Velacherry Venkateshwara', 
-    industry: 'Retail', 
-    logo: img3 
+  {
+    id: '3',
+    name: 'Velacherry Venkateshwara',
+    industry: 'Retail',
+    logo: 'assets/clients/company3.jpg'
   },
-  { 
-    id: '4', 
-    name: 'Mutha Opticals', 
-    industry: 'Healthcare', 
-    logo: img4 
+  {
+    id: '4',
+    name: 'Mutha Opticals',
+    industry: 'Healthcare',
+    logo: 'assets/clients/company4.jpg'
   },
-  { 
-    id: '5', 
-    name: 'Barbikan', 
-    industry: 'Wholesale', 
-    logo: img5 
+  {
+    id: '5',
+    name: 'Barbikan',
+    industry: 'Wholesale',
+    logo: 'assets/clients/company5.jpg'
   },
-  { 
-    id: '6', 
-    name: 'MP Enterprises', 
-    industry: 'General', 
-    logo: img6 
+  {
+    id: '6',
+    name: 'MP Enterprises',
+    industry: 'General',
+    logo: 'assets/clients/company6.jpg'
   },
-  { 
-    id: '7', 
-    name: 'Glitz Info Solution', 
-    industry: 'IT Services', 
-    logo: img7 
+  {
+    id: '7',
+    name: 'Glitz Info Solution',
+    industry: 'IT Services',
+    logo: 'assets/clients/company7.jpg'
   },
-  { 
-    id: '8', 
-    name: 'AGC', 
-    industry: 'Corporate', 
-    logo: img8 
+  {
+    id: '8',
+    name: 'AGC',
+    industry: 'Corporate',
+    logo: 'assets/clients/company8.jpg'
   },
 ];

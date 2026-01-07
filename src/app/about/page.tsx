@@ -1,5 +1,4 @@
 "use client";
-
 import Layout from "~/components/Layout";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -23,6 +22,8 @@ import {
 import ClienteleSection from "~/components/sections/ClienteleSection";
 import { motion } from "framer-motion";
 import { fadeInUp, fadeIn, staggerContainer } from "~/lib/animations";
+
+export const dynamic = "force-static";
 
 const differentiators = [
   { text: "3 Years of local recruitment expertise", icon: Clock },

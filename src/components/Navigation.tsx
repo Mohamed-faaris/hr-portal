@@ -7,7 +7,7 @@ import { Menu, X } from "lucide-react";
 import { cn } from "~/lib/utils";
 import Image from "next/image";
 
-import logo from "~/assets/dharvista-logo.jpg";
+const logo = "/assets/dharvista-logo.jpg";
 
 const navLinks = [
   { href: "/", label: "Home" },
