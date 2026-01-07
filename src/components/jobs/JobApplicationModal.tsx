@@ -34,8 +34,10 @@ import {
 import { type inferRouterInputs } from "@trpc/server";
 import { type AppRouter } from "~/server/api/root";
 import { api } from "~/trpc/react";
-import { useUploadFiles } from "@better-upload/client";
-import { UploadDropzoneProgress } from "~/components/ui/upload-dropzone-progress";
+import {
+  UploadDropzoneProgress,
+  type UploadFileState,
+} from "~/components/ui/upload-dropzone-progress";
 import { type Job } from "~/types";
 
 interface JobApplicationModalProps {
@@ -52,13 +54,78 @@ export function JobApplicationModal({
   const { toast } = useToast();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const createApplication = api.applications.create.useMutation();
-  const {
-    control,
-    uploadedFiles,
-    isPending: isUploading,
-  } = useUploadFiles({
-    route: "resume",
-  });
+
+  // Custom File Upload Logic
+  const [uploadedFiles, setUploadedFiles] = useState<UploadFileState[]>([]);
+  const isUploading = uploadedFiles.some((f) => f.status === "uploading");
+
+  const handleFileUpload = async (files: File[]) => {
+    // We only want to handle one file for resume
+    const file = files[0];
+    if (!file) return;
+
+    const fileId = Math.random().toString(36).substring(7);
+    const newState: UploadFileState = {
+      id: fileId,
+      file,
+      progress: 0,
+      status: "uploading",
+    };
+
+    // Replace existing files (only one resume allowed)
+    setUploadedFiles([newState]);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const progress = (event.loaded / event.total) * 100;
+        setUploadedFiles((prev) =>
+          prev.map((f) => (f.id === fileId ? { ...f, progress } : f)),
+        );
+      }
+    });
+
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const response = JSON.parse(xhr.responseText);
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileId
+              ? { ...f, status: "complete", url: response.url, progress: 100 }
+              : f,
+          ),
+        );
+      } else {
+        const error = JSON.parse(xhr.responseText).error || "Upload failed";
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileId ? { ...f, status: "error", error } : f,
+          ),
+        );
+      }
+    });
+
+    xhr.addEventListener("error", () => {
+      setUploadedFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileId
+            ? { ...f, status: "error", error: "Network error" }
+            : f,
+        ),
+      );
+    });
+
+    xhr.open("POST", "/api/s3/upload");
+    xhr.send(formData);
+  };
+
+  const handleRemoveFile = (id: string) => {
+    setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
+  };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -142,7 +209,7 @@ export function JobApplicationModal({
     setIsSubmitting(true);
 
     try {
-      const resumeUrl = (firstFile.objectInfo as any).url as string;
+      const resumeUrl = firstFile.url;
 
       if (!resumeUrl) {
         throw new Error("Failed to retrieve resume URL. Please try again.");
@@ -633,7 +700,10 @@ export function JobApplicationModal({
                     )}
                   </Label>
                   <UploadDropzoneProgress
-                    control={control}
+                    files={uploadedFiles}
+                    onUpload={handleFileUpload}
+                    onRemove={handleRemoveFile}
+                    isPending={isUploading}
                     accept=".pdf,.doc,.docx"
                     description={{
                       maxFiles: 1,
