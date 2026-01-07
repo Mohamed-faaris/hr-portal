@@ -34,6 +34,7 @@ import {
 import { type inferRouterInputs } from "@trpc/server";
 import { type AppRouter } from "~/server/api/root";
 import { api } from "~/trpc/react";
+import { useUploadFile } from "@better-upload/client";
 
 interface JobApplicationModalProps {
   job: Job;
@@ -49,6 +50,15 @@ export function JobApplicationModal({
   const { toast } = useToast();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const createApplication = api.applications.create.useMutation();
+  const {
+    uploadAsync,
+    isPending: isUploading,
+    progress,
+    isError: isUploadError,
+    error: uploadError,
+  } = useUploadFile({
+    route: "resume",
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resume, setResume] = useState<File | null>(null);
@@ -160,9 +170,24 @@ export function JobApplicationModal({
     setIsSubmitting(true);
 
     try {
-      // � Note: Real world would upload file to S3/Cloudinary first
-      // For this demo, we'll simulate the URL since we depend on tRPC which doesn't handle Files easily without plugins
-      const resumeUrl = "https://placeholder-resume-url.com/" + resume.name;
+      // Upload the resume to S3 via better-upload
+      const uploadedFile = await uploadAsync(resume).catch((err) => {
+        console.error("[UPLOAD_CLIENT_ERROR]", err);
+        toast({
+          title: "Upload Failed",
+          description:
+            err.message ||
+            "There was an error uploading your resume. Please try again.",
+          variant: "destructive",
+        });
+        throw err;
+      });
+
+      if (!uploadedFile?.url) {
+        throw new Error("Failed to upload resume. Please try again.");
+      }
+
+      const resumeUrl = uploadedFile.url;
 
       await createApplication.mutateAsync({
         jobId: job.id,
@@ -666,10 +691,35 @@ export function JobApplicationModal({
                         <span className="max-w-[200px] truncate text-sm font-medium">
                           {resume.name}
                         </span>
+                        {isUploading && (
+                          <div className="mt-1 w-full max-w-[240px]">
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
+                              <div
+                                className="h-full bg-amber-500 transition-all duration-300"
+                                style={{ width: `${progress * 100}%` }}
+                              />
+                            </div>
+                            <span className="mt-1 text-[10px] text-stone-400">
+                              Uploading... {Math.round(progress * 100)}%
+                            </span>
+                          </div>
+                        )}
+                        {isUploadError && (
+                          <div className="mt-2 flex flex-col items-center gap-1">
+                            <span className="text-[11px] font-semibold text-red-600">
+                              Upload Failed
+                            </span>
+                            <span className="line-clamp-2 px-4 text-center text-[10px] text-stone-500">
+                              {uploadError?.message ||
+                                "Please check your connection and try again."}
+                            </span>
+                          </div>
+                        )}
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
+                          disabled={isUploading}
                           className="relative z-20 h-6 px-2 text-xs text-red-500 hover:bg-red-50 hover:text-red-600"
                           onClick={(e) => {
                             e.preventDefault();
@@ -723,11 +773,12 @@ export function JobApplicationModal({
             type="submit"
             form="job-app-form"
             className="min-w-[120px] bg-amber-600 font-semibold text-white shadow-lg shadow-amber-600/20 hover:bg-amber-700 md:min-w-[160px]"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {isUploading ? "Uploading Resume..." : "Submitting..."}
               </>
             ) : (
               "Submit Application"
