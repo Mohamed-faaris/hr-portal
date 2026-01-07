@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "~/server/better-auth";
 import { db } from "~/server/db";
-import { DEFAULT_JOB_CONFIG, jobConfigs, jobs } from "~/server/db/schema";
+import { DEFAULT_JOB_CONFIG, jobConfigs, jobs, user } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
 
 const MOCK_JOBS = [
   {
@@ -369,9 +370,10 @@ export async function POST(req: Request) {
   const image = body.image || "https://example.com/image.png";
 
   const logs: string[] = [];
+  let userId: string | undefined;
 
+  // 1. Create the Admin User
   try {
-    // 1. Create the Admin User
     logs.push("Step 1: Creating admin user...");
     const result = await auth.api.signUpEmail({
       body: {
@@ -381,60 +383,79 @@ export async function POST(req: Request) {
         image,
       },
     });
-
-    const userId = result.user.id;
+    userId = result.user.id;
     logs.push(`Successfully created user: ${userId}`);
+  } catch (error: any) {
+    logs.push(`Step 1 Failed: ${error.message || "User might already exist"}`);
+    // Try to find existing user to continue seeding
+    try {
+      const existingUser = await db.query.user.findFirst({
+        where: eq(user.email, email),
+      });
+      if (existingUser) {
+        userId = existingUser.id;
+        logs.push(`Found existing user with ID: ${userId}. Continuing...`);
+      }
+    } catch (findError: any) {
+      logs.push(`Failed to find existing user: ${findError.message}`);
+    }
+  }
 
-    // 2. Seed the mock jobs linked to this user
-    logs.push("Step 2: Seeding mock jobs...");
-    await db.insert(jobs).values(
-      MOCK_JOBS.map(job => ({
-        ...job,
-        createdBy: userId,
-        config: DEFAULT_JOB_CONFIG, // Required to match schema
-      }))
-    );
-    logs.push(`Seeded ${MOCK_JOBS.length} jobs`);
+  // 2. Seed the mock jobs linked to this user
+  if (userId) {
+    try {
+      logs.push("Step 2: Seeding mock jobs...");
+      await db.insert(jobs).values(
+        MOCK_JOBS.map((job) => ({
+          ...job,
+          createdBy: userId!,
+          config: DEFAULT_JOB_CONFIG,
+        }))
+      );
+      logs.push(`Seeded ${MOCK_JOBS.length} jobs`);
+    } catch (error: any) {
+      logs.push(`Step 2 Failed: ${error.message}`);
+    }
+  } else {
+    logs.push("Skipping Step 2: No valid User ID found");
+  }
 
+  // 3. Seed job configurations
+  try {
     logs.push("Step 3: Seeding job configurations...");
     await db.insert(jobConfigs).values([
       {
         name: "Default Config",
-        config: DEFAULT_JOB_CONFIG 
+        config: DEFAULT_JOB_CONFIG,
       },
       {
         name: "Minimal Config",
         config: {
-          fullName: 'required',
-          email: 'required',
-          phone: 'required',
-          resumeUrl: 'shown',
-        } as Record<string, "required" | "shown" | "hidden">
-      }
-    ])
+          fullName: "required",
+          email: "required",
+          phone: "required",
+          resumeUrl: "shown",
+        } as Record<string, "required" | "shown" | "hidden">,
+      },
+    ]);
     logs.push("Seeded job configurations");
-
-    return NextResponse.json({
-      success: true,
-      message: "Admin user created and mock data seeded successfully",
-      logs,
-      user: {
-        id: userId,
-        email: result.user.email,
-        name: result.user.name,
-      },
-      jobsCount: MOCK_JOBS.length,
-    });
   } catch (error: any) {
-    logs.push(`ERROR: ${error.message || "Unknown error"}`);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Setup failed (user might already exist)",
-        logs,
-        error: error.message || "Unknown error",
-      },
-      { status: 400 }
-    );
+    logs.push(`Step 3 Failed: ${error.message}`);
   }
-}
+
+  const isSuccess = userId !== undefined;
+
+  return NextResponse.json({
+    success: isSuccess,
+    message: isSuccess
+      ? "Setup process completed (check logs for details)"
+      : "Setup failed: Could not establish a user identity",
+    logs,
+    user: userId
+      ? {
+        id: userId,
+        email,
+      }
+      : null,
+    jobsCount: MOCK_JOBS.length,
+  });
