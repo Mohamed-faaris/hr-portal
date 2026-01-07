@@ -8,6 +8,20 @@
       "when": 1767648417379,
       "tag": "0000_sour_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767814855903,
+      "tag": "0001_curvy_terrax",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767815869415,
+      "tag": "0002_illegal_doomsday",
+      "breakpoints": true
     }
   ]
 }

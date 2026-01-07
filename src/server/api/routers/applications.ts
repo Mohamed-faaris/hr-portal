@@ -59,9 +59,9 @@ export const applicationsRouter = createTRPCRouter({
         keySkills: z.string().optional(),
         preferredJobType: z.string().optional(),
         dateOfBirth: z.string().optional(),
-        linkedinProfile: z.string().url().optional(),
-        portfolio: z.string().url().optional(),
-        resumeUrl: z.string().url().optional(),
+        linkedinProfile: z.string().optional(),
+        portfolio: z.string().optional(),
+        resumeUrl: z.string().optional(),
         captchaToken: z.string().optional(),
       })
     )

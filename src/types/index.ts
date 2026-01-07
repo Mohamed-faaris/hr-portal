@@ -27,6 +27,7 @@ export interface Job {
   updatedAt: string;
 
   googleFormUrl?: string;
+  config?: Record<string, 'required' | 'shown' | 'hidden'>;
 }
 
 export interface Applicant {

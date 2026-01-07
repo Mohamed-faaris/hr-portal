@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "~/server/better-auth";
 import { db } from "~/server/db";
-import { jobs } from "~/server/db/schema";
+import { DEFAULT_JOB_CONFIG, jobConfigs, jobs } from "~/server/db/schema";
 
 const MOCK_JOBS = [
   {
@@ -368,8 +368,11 @@ export async function POST(req: Request) {
   const name = body.name || "test";
   const image = body.image || "https://example.com/image.png";
 
+  const logs: string[] = [];
+
   try {
     // 1. Create the Admin User
+    logs.push("Step 1: Creating admin user...");
     const result = await auth.api.signUpEmail({
       body: {
         email,
@@ -380,19 +383,41 @@ export async function POST(req: Request) {
     });
 
     const userId = result.user.id;
+    logs.push(`Successfully created user: ${userId}`);
 
     // 2. Seed the mock jobs linked to this user
+    logs.push("Step 2: Seeding mock jobs...");
     await db.insert(jobs).values(
       MOCK_JOBS.map(job => ({
         ...job,
         createdBy: userId,
-        config: {}, // Required to match schema
+        config: DEFAULT_JOB_CONFIG, // Required to match schema
       }))
     );
+    logs.push(`Seeded ${MOCK_JOBS.length} jobs`);
+
+    logs.push("Step 3: Seeding job configurations...");
+    await db.insert(jobConfigs).values([
+      {
+        name: "Default Config",
+        config: DEFAULT_JOB_CONFIG 
+      },
+      {
+        name: "Minimal Config",
+        config: {
+          fullName: 'required',
+          email: 'required',
+          phone: 'required',
+          resumeUrl: 'shown',
+        } as Record<string, "required" | "shown" | "hidden">
+      }
+    ])
+    logs.push("Seeded job configurations");
 
     return NextResponse.json({
       success: true,
-      message: "Admin user created and mock jobs seeded successfully",
+      message: "Admin user created and mock data seeded successfully",
+      logs,
       user: {
         id: userId,
         email: result.user.email,
@@ -401,10 +426,12 @@ export async function POST(req: Request) {
       jobsCount: MOCK_JOBS.length,
     });
   } catch (error: any) {
+    logs.push(`ERROR: ${error.message || "Unknown error"}`);
     return NextResponse.json(
       {
         success: false,
         message: "Setup failed (user might already exist)",
+        logs,
         error: error.message || "Unknown error",
       },
       { status: 400 }
