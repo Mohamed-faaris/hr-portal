@@ -52,16 +52,19 @@ export function UploadDropzoneProgress({
     },
     noClick: true,
     accept: accept
-      ? accept.split(",").reduce((acc, curr) => {
-          const mime = curr.trim();
-          if (mime === ".pdf") acc["application/pdf"] = [".pdf"];
-          else if (mime === ".doc") acc["application/msword"] = [".doc"];
-          else if (mime === ".docx")
-            acc[
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ] = [".docx"];
-          return acc;
-        }, {} as Record<string, string[]>)
+      ? accept.split(",").reduce(
+          (acc, curr) => {
+            const mime = curr.trim();
+            if (mime === ".pdf") acc["application/pdf"] = [".pdf"];
+            else if (mime === ".doc") acc["application/msword"] = [".doc"];
+            else if (mime === ".docx")
+              acc[
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              ] = [".docx"];
+            return acc;
+          },
+          {} as Record<string, string[]>,
+        )
       : undefined,
   });
 
@@ -72,7 +75,7 @@ export function UploadDropzoneProgress({
           "relative rounded-lg border border-dashed transition-colors",
           {
             "border-primary/80": isDragActive,
-          }
+          },
         )}
       >
         <label
@@ -83,7 +86,7 @@ export function UploadDropzoneProgress({
               "text-muted-foreground cursor-not-allowed": isPending,
               "hover:bg-accent dark:hover:bg-accent/40": !isPending,
               "opacity-0": isDragActive,
-            }
+            },
           )}
           htmlFor={_id || id}
         >
@@ -140,9 +143,9 @@ export function UploadDropzoneProgress({
             className={cn(
               "dark:bg-input/10 flex items-center gap-2 rounded-lg border bg-transparent p-3",
               {
-                "bg-red-500/[0.04]! border-red-500/60":
+                "border-red-500/60 bg-red-500/[0.04]!":
                   progress.status === "failed",
-              }
+              },
             )}
           >
             <FileIcon type={progress.type} />
@@ -152,8 +155,8 @@ export function UploadDropzoneProgress({
                 <p className="max-w-40 truncate text-sm font-medium">
                   {progress.name}
                 </p>
-                <Dot className="text-stone-400 size-4" />
-                <p className="text-stone-400 text-xs">
+                <Dot className="size-4 text-stone-400" />
+                <p className="text-xs text-stone-400">
                   {formatBytes(progress.size)}
                 </p>
               </div>
@@ -164,7 +167,7 @@ export function UploadDropzoneProgress({
                 ) : progress.status === "failed" ? (
                   <p className="text-xs text-red-500">Failed</p>
                 ) : (
-                  <p className="text-stone-400 text-xs">Completed</p>
+                  <p className="text-xs text-stone-400">Completed</p>
                 )}
               </div>
             </div>
@@ -199,15 +202,15 @@ const iconCaptions: Record<string, string> = {
 
 function FileIcon({ type }: { type: string }) {
   const caption = Object.entries(iconCaptions).find(([key]) =>
-    type.startsWith(key)
+    type.startsWith(key),
   )?.[1];
 
   return (
     <div className="relative shrink-0">
-      <File className="text-stone-400 size-12" strokeWidth={1} />
+      <File className="size-12 text-stone-400" strokeWidth={1} />
 
       {caption && (
-        <span className="bg-amber-600 text-white absolute bottom-2.5 left-0.5 select-none rounded px-1 py-px text-xs font-semibold">
+        <span className="absolute bottom-2.5 left-0.5 rounded bg-amber-600 px-1 py-px text-xs font-semibold text-white select-none">
           {caption}
         </span>
       )}

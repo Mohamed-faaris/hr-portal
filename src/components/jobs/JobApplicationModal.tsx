@@ -52,7 +52,11 @@ export function JobApplicationModal({
   const { toast } = useToast();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const createApplication = api.applications.create.useMutation();
-  const { control, uploadedFiles, isPending: isUploading } = useUploadFiles({
+  const {
+    control,
+    uploadedFiles,
+    isPending: isUploading,
+  } = useUploadFiles({
     route: "resume",
   });
 
