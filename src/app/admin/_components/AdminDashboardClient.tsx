@@ -231,7 +231,7 @@ export default function AdminDashboardClient() {
         <div className="flex items-center gap-3">
           <div className="relative h-12 w-12 overflow-hidden">
             <Image
-              src="/dharvista-logo.jpg"
+              src="/assets/dharvista-logo.jpg"
               alt="Logo"
               width={48}
               height={48}
@@ -274,7 +274,7 @@ export default function AdminDashboardClient() {
         <div className="flex flex-col items-center gap-2 border-b border-gray-100 p-6 text-center">
           <div className="relative h-20 w-20 overflow-hidden transition-transform hover:scale-105">
             <Image
-              src="/dharvista-logo.jpg"
+              src="/assets/dharvista-logo.jpg"
               alt="Logo"
               width={80}
               height={80}
