@@ -459,3 +459,4 @@ export async function POST(req: Request) {
       : null,
     jobsCount: MOCK_JOBS.length,
   });
+}
