@@ -22,7 +22,11 @@ const router: Router = {
             maxFileSize: 1024 * 1024 * 5, // 5MB
             onBeforeUpload: async ({ file }) => {
                 console.log(`[UPLOAD_REQUEST] Initiating resume upload: ${file.name} (${file.size} bytes)`);
-                return {};
+                return {
+                    objectInfo: {
+                        key: `resume_${Date.now()}_${file.name}`,
+                    },
+                };
             },
             onAfterSignedUrl: async ({ file }) => {
                 console.log(`[UPLOAD_SIGNED_URL] Presigned URL generated for: ${file.name}`);
