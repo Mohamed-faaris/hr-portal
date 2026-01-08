@@ -5,11 +5,11 @@ import { env } from "~/env";
 
 const router: Router = {
     client: backblaze({
-        region: env.BACKBLAZE_REGION ?? "",
-        applicationKeyId: env.BACKBLAZE_APPLICATION_KEY_ID ?? "",
-        applicationKey: env.BACKBLAZE_APPLICATION_KEY ?? "",
+        region: env.BACKBLAZE_REGION,
+        applicationKeyId: env.BACKBLAZE_APPLICATION_KEY_ID,
+        applicationKey: env.BACKBLAZE_APPLICATION_KEY,
     }),
-    bucketName: env.S3_BUCKET_NAME ?? "hr-portal-resumes",
+    bucketName: env.S3_BUCKET_NAME,
     routes: {
         resume: route({
             fileTypes: [
