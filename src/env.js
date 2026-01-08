@@ -24,6 +24,9 @@ export const env = createEnv({
       .string()
       .optional()
       .transform((v) => v === "true"),
+    BACKBLAZE_REGION: z.string(),
+    BACKBLAZE_APPLICATION_KEY_ID: z.string(),
+    BACKBLAZE_APPLICATION_KEY: z.string(),
   },
 
   /**
@@ -49,6 +52,9 @@ export const env = createEnv({
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_FORCE_PATH_STYLE: process.env.S3_FORCE_PATH_STYLE,
+    BACKBLAZE_REGION: process.env.BACKBLAZE_REGION,
+    BACKBLAZE_APPLICATION_KEY_ID: process.env.BACKBLAZE_APPLICATION_KEY_ID,
+    BACKBLAZE_APPLICATION_KEY: process.env.BACKBLAZE_APPLICATION_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

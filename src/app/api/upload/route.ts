@@ -1,15 +1,13 @@
 import { route, type Router } from '@better-upload/server';
 import { toRouteHandler } from '@better-upload/server/adapters/next';
-import { aws } from '@better-upload/server/clients';
+import { backblaze } from '@better-upload/server/clients';
 import { env } from "~/env";
 
 const router: Router = {
-    client: aws({
-        accessKeyId: env.S3_ACCESS_KEY_ID ?? "",
-        secretAccessKey: env.S3_SECRET_ACCESS_KEY ?? "",
-        region: env.S3_REGION ?? "us-east-1",
-        endpoint: env.S3_ENDPOINT,
-        forcePathStyle: env.S3_FORCE_PATH_STYLE,
+    client: backblaze({
+        region: env.BACKBLAZE_REGION ?? "",
+        applicationKeyId: env.BACKBLAZE_APPLICATION_KEY_ID ?? "",
+        applicationKey: env.BACKBLAZE_APPLICATION_KEY ?? "",
     }),
     bucketName: env.S3_BUCKET_NAME ?? "hr-portal-resumes",
     routes: {
