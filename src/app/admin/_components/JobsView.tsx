@@ -465,10 +465,6 @@ export default function JobsView({
         {jobs.map((job: any) => {
           const isDeleting =
             deleteJob.isPending && deleteJob.variables?.id === job.id;
-          const isUpdatingStatus =
-            updateStatus.isPending && updateStatus.variables?.id === job.id;
-          const isUpdatingPriority =
-            updatePriority.isPending && updatePriority.variables?.id === job.id;
 
           return (
             <Card
@@ -480,21 +476,15 @@ export default function JobsView({
                   <div className="flex flex-wrap items-center gap-2">
                     <h4 className="font-bold">{job.title}</h4>
                     <DropdownMenu>
-                      <DropdownMenuTrigger
-                        asChild
-                        disabled={isUpdatingPriority}
-                      >
+                      <DropdownMenuTrigger asChild>
                         <Badge
                           variant={
                             job.priority === "urgent"
                               ? "destructive"
                               : "secondary"
                           }
-                          className={`${isUpdatingPriority ? "cursor-not-allowed opacity-50" : "cursor-pointer"} capitalize`}
+                          className="cursor-pointer capitalize"
                         >
-                          {isUpdatingPriority ? (
-                            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                          ) : null}
                           {job.priority}
                         </Badge>
                       </DropdownMenuTrigger>
@@ -530,7 +520,6 @@ export default function JobsView({
                   <Button
                     variant="outline"
                     size="sm"
-                    disabled={isUpdatingStatus}
                     onClick={() =>
                       updateStatus.mutate({
                         id: job.id,
@@ -539,9 +528,6 @@ export default function JobsView({
                       })
                     }
                   >
-                    {isUpdatingStatus && (
-                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                    )}
                     {job.status === "published" ? "Close" : "Publish"}
                   </Button>
                   <Button variant="outline" size="sm" asChild>
@@ -553,7 +539,7 @@ export default function JobsView({
                   <Button
                     variant="outline"
                     size="sm"
-                    disabled={isDeleting || isUpdatingStatus}
+                    disabled={isDeleting}
                     onClick={() => {
                       // preload custom config from job (either inline config or linked template)
                       const preloaded =

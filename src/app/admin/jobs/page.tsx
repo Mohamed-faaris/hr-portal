@@ -28,19 +28,55 @@ export default function JobsPage() {
   });
 
   const updateJobStatusMutation = api.jobs.updateStatus.useMutation({
-    onSuccess: () => {
-      toast.success("Job status updated!");
+    onMutate: async (newStatus) => {
+      await utils.jobs.getAllAdmin.cancel();
+      const previousJobs = utils.jobs.getAllAdmin.getData();
+
+      utils.jobs.getAllAdmin.setData(undefined, (old) => {
+        if (!old) return old;
+        return old.map((job) =>
+          job.id === newStatus.id ? { ...job, status: newStatus.status } : job,
+        );
+      });
+
+      return { previousJobs };
+    },
+    onError: (err, newStatus, context) => {
+      if (context?.previousJobs) {
+        utils.jobs.getAllAdmin.setData(undefined, context.previousJobs);
+      }
+      toast.error(`Failed to update status: ${err.message}`);
+    },
+    onSettled: () => {
       void utils.jobs.getAllAdmin.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
 
   const updateJobPriorityMutation = api.jobs.updatePriority.useMutation({
-    onSuccess: () => {
-      toast.success("Job priority updated!");
+    onMutate: async (newPriority) => {
+      await utils.jobs.getAllAdmin.cancel();
+      const previousJobs = utils.jobs.getAllAdmin.getData();
+
+      utils.jobs.getAllAdmin.setData(undefined, (old) => {
+        if (!old) return old;
+        return old.map((job) =>
+          job.id === newPriority.id
+            ? { ...job, priority: newPriority.priority }
+            : job,
+        );
+      });
+
+      return { previousJobs };
+    },
+    onError: (err, newPriority, context) => {
+      if (context?.previousJobs) {
+        utils.jobs.getAllAdmin.setData(undefined, context.previousJobs);
+      }
+      toast.error(`Failed to update priority: ${err.message}`);
+    },
+    onSettled: () => {
       void utils.jobs.getAllAdmin.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
 
   return (
