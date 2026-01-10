@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { env } from "~/env";
 import ReCAPTCHA from "react-google-recaptcha";
 import {
   Dialog,
@@ -54,6 +55,18 @@ export function JobApplicationModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resume, setResume] = useState<File | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  // Only enable reCAPTCHA in environments other than development/production
+  // (per request: remove/disable reCAPTCHA when runtime env is dev or prod)
+  const isRecaptchaEnabled =
+    env.NODE_ENV !== "development" && env.NODE_ENV !== "production";
+
+  useEffect(() => {
+    if (!isRecaptchaEnabled) {
+      // set a bypass token so submission can proceed when captcha is disabled
+      setCaptchaToken("development-mode-bypass");
+    }
+  }, [isRecaptchaEnabled]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -149,7 +162,7 @@ export function JobApplicationModal({
       return;
     }
 
-    if (!captchaToken) {
+    if (!captchaToken && isRecaptchaEnabled) {
       toast({
         title: "Verification Required",
         description: "Please complete the reCAPTCHA.",
@@ -713,11 +726,22 @@ export function JobApplicationModal({
 
                 {/* Captcha */}
                 <div className="flex origin-center scale-90 justify-center pt-2 md:scale-100 md:pt-4">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
-                    onChange={handleCaptchaChange}
-                  />
+                  {isRecaptchaEnabled ? (
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
+                      onChange={handleCaptchaChange}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-center">
+                      <span className="text-xs font-bold tracking-wider text-amber-600 uppercase">
+                        reCAPTCHA Disabled
+                      </span>
+                      <p className="text-[11px] text-amber-700">
+                        Verification bypassed for current environment.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
