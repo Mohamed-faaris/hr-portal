@@ -1,5 +1,5 @@
-import AdminDashboardClient from "./_components/AdminDashboardClient";
+import { redirect } from "next/navigation";
 
 export default function AdminPage() {
-  return <AdminDashboardClient />;
+  redirect("/admin/jobs");
 }

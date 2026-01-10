@@ -75,6 +75,28 @@ export const jobsRouter = createTRPCRouter({
       return result;
     }),
 
+  updatePriority: protectedProcedure
+    .input(z.object({
+      id: z.string().uuid(),
+      priority: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.db
+        .update(jobs)
+        .set({
+          priority: input.priority,
+          updatedAt: new Date(),
+        })
+        .where(eq(jobs.id, input.id))
+        .returning();
+
+      revalidatePath("/");
+      revalidatePath("/jobs");
+      revalidatePath(`/jobs/${input.id}`);
+
+      return result;
+    }),
+
   getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.query.jobs.findMany({
       orderBy: [desc(jobs.createdAt)],
