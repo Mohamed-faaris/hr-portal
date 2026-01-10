@@ -49,6 +49,7 @@ export function JobApplicationModal({
   const { toast } = useToast();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const createApplication = api.applications.create.useMutation();
+  const getPresignedUrl = api.upload.getPresignedUrl.useMutation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resume, setResume] = useState<File | null>(null);
@@ -160,14 +161,29 @@ export function JobApplicationModal({
     setIsSubmitting(true);
 
     try {
-      // � Note: Real world would upload file to S3/Cloudinary first
-      // For this demo, we'll simulate the URL since we depend on tRPC which doesn't handle Files easily without plugins
-      const resumeUrl = "https://placeholder-resume-url.com/" + resume.name;
+      // Get presigned URL for upload
+      const { uploadUrl, url } = await getPresignedUrl.mutateAsync({
+        fileName: resume.name,
+        fileType: resume.type,
+      });
+
+      // Upload file to S3/Backblaze
+      const uploadResponse = await fetch(uploadUrl, {
+        method: "PUT",
+        body: resume,
+        headers: {
+          "Content-Type": resume.type,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload resume");
+      }
 
       await createApplication.mutateAsync({
         jobId: job.id,
         captchaToken: captchaToken,
-        resumeUrl: resumeUrl,
+        resumeUrl: url,
         ...formData,
       });
 
