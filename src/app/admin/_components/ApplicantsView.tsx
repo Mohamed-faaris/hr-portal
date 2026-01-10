@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
@@ -31,9 +31,17 @@ export default function ApplicantsView({
   applicants,
   jobs,
   loading,
+  initialJobId,
   updateStatus,
 }: any) {
   const [selectedJob, setSelectedJob] = useState<any>(null);
+
+  useEffect(() => {
+    if (initialJobId && jobs.length > 0 && !selectedJob) {
+      const job = jobs.find((j: any) => j.id === initialJobId);
+      if (job) setSelectedJob(job);
+    }
+  }, [initialJobId, jobs, selectedJob]);
 
   if (loading)
     return (

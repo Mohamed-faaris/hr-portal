@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Loader2 } from "lucide-react";
+import { Plus, Trash2, Loader2, Users } from "lucide-react";
+import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
@@ -115,7 +116,7 @@ export default function JobsView({
   if (loading)
     return (
       <div className="flex min-h-[400px] flex-col items-center justify-center p-10 text-center text-gray-400">
-        <Loader2 className="mb-4 h-10 w-10 animate-spin text-primary/20" />
+        <Loader2 className="text-primary/20 mb-4 h-10 w-10 animate-spin" />
         <p>Loading jobs and configurations...</p>
       </div>
     );
@@ -542,6 +543,12 @@ export default function JobsView({
                       <Loader2 className="mr-2 h-3 w-3 animate-spin" />
                     )}
                     {job.status === "published" ? "Close" : "Publish"}
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/admin/applicants?jobId=${job.id}`}>
+                      <Users className="mr-2 h-3.5 w-3.5" />
+                      View Applicants
+                    </Link>
                   </Button>
                   <Button
                     variant="outline"
