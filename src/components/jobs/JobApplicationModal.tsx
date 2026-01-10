@@ -102,6 +102,10 @@ export function JobApplicationModal({
     return val === "shown" || val === "required";
   };
 
+  const isPanelVisible = (names: string[]) => {
+    return names.some((n) => isFieldVisible(n));
+  };
+
   const isFieldRequired = (name: string) => {
     return config[name] === "required";
   };
@@ -279,7 +283,14 @@ export function JobApplicationModal({
             {/* LEFT COLUMN */}
             <div className="space-y-4 md:space-y-6">
               {/* Personal Information */}
-              <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
+              {isPanelVisible([
+                'fullName',
+                'email',
+                'phone',
+                'gender',
+                'dateOfBirth',
+              ]) && (
+                <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
                 <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
                   <User className="h-4 w-4 text-amber-600" /> Personal Details
                 </h3>
@@ -385,9 +396,15 @@ export function JobApplicationModal({
                   )}
                 </div>
               </div>
+              )}
 
               {/* Location */}
-              <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
+              {isPanelVisible([
+                'currentLocation',
+                'preferredWorkLocation',
+                'preferredJobType',
+              ]) && (
+                <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
                 <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
                   <MapPin className="h-4 w-4 text-amber-600" /> Location &
                   Preferences
@@ -467,12 +484,24 @@ export function JobApplicationModal({
                   )}
                 </div>
               </div>
+              )}
             </div>
 
             {/* RIGHT COLUMN */}
             <div className="space-y-4 md:space-y-6">
               {/* Professional & Education */}
-              <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
+              {isPanelVisible([
+                'totalExperience',
+                'highestQualification',
+                'currentCompany',
+                'currentDesignation',
+                'currentSalary',
+                'expectedSalary',
+                'keySkills',
+                'linkedinProfile',
+                'portfolio',
+              ]) && (
+                <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
                 <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
                   <Briefcase className="h-4 w-4 text-amber-600" /> Professional
                   Details
@@ -662,9 +691,11 @@ export function JobApplicationModal({
                   )}
                 </div>
               </div>
+              )}
 
               {/* Resume & Captcha */}
-              <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
+              {isPanelVisible(['resumeUrl']) && (
+                <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
                 <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
                   <Paperclip className="h-4 w-4 text-amber-600" /> Resume
                   Verification
@@ -743,6 +774,7 @@ export function JobApplicationModal({
                   )}
                 </div>
               </div>
+              )}
             </div>
           </form>
         </div>
