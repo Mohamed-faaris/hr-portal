@@ -661,54 +661,58 @@ function JobsView({
           if (!open) setEditingJobForConfig(null);
         }}
       >
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingJobForConfig
-                ? `Custom Job Configuration — ${editingJobForConfig.title}`
-                : "Custom Job Configuration"}
-            </DialogTitle>
-            <DialogDescription>
-              Configure which fields are required, shown, or hidden for this
-              specific job.
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-4">
+            <DialogHeader>
+              <DialogTitle>
+                {editingJobForConfig
+                  ? `Custom Job Configuration — ${editingJobForConfig.title}`
+                  : "Custom Job Configuration"}
+              </DialogTitle>
+              <DialogDescription>
+                Configure which fields are required, shown, or hidden for this
+                specific job.
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-            {FIELD_NAMES.map((field) => {
-              const currentValue = customConfig?.[field.key] || "shown";
-              return (
-                <div
-                  key={field.key}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
-                  <span className="text-sm font-medium">{field.label}</span>
-                  <div className="flex rounded-md bg-gray-100 p-1">
-                    {(["required", "shown", "hidden"] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        onClick={() =>
-                          setCustomConfig({
-                            ...(customConfig || {}),
-                            [field.key]: mode,
-                          })
-                        }
-                        className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
-                          currentValue === mode
-                            ? "text-primary bg-white shadow-sm"
-                            : "text-gray-500 hover:text-gray-700"
-                        }`}
-                      >
-                        {mode === "shown" ? "Show" : mode}
-                      </button>
-                    ))}
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              {FIELD_NAMES.map((field) => {
+                const currentValue = customConfig?.[field.key] || "shown";
+                return (
+                  <div
+                    key={field.key}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
+                    <span className="text-sm font-medium">{field.label}</span>
+                    <div className="flex rounded-md bg-gray-100 p-1">
+                      {(["required", "shown", "hidden"] as const).map(
+                        (mode) => (
+                          <button
+                            key={mode}
+                            onClick={() =>
+                              setCustomConfig({
+                                ...(customConfig || {}),
+                                [field.key]: mode,
+                              })
+                            }
+                            className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                              currentValue === mode
+                                ? "text-primary bg-white shadow-sm"
+                                : "text-gray-500 hover:text-gray-700"
+                            }`}
+                          >
+                            {mode === "shown" ? "Show" : mode}
+                          </button>
+                        ),
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
-          <div className="mt-6 flex justify-end gap-3">
+          <div className="flex shrink-0 justify-end gap-3 border-t bg-white p-4">
             <Button
               variant="outline"
               onClick={() => setIsCustomConfigOpen(false)}
@@ -1117,66 +1121,70 @@ function ConfigsView({
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingConfig ? "Edit Template" : "New Form Template"}
-            </DialogTitle>
-            <DialogDescription>
-              Define which fields should be required or optional in the
-              application form.
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-4">
+            <DialogHeader>
+              <DialogTitle>
+                {editingConfig ? "Edit Template" : "New Form Template"}
+              </DialogTitle>
+              <DialogDescription>
+                Define which fields should be required or optional in the
+                application form.
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="mt-4 space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold">Template Name</label>
-              <Input
-                placeholder="e.g. Sales Executive Form, IT Dev Application"
-                value={currentConfig.name}
-                onChange={(e) =>
-                  setCurrentConfig({ ...currentConfig, name: e.target.value })
-                }
-              />
-            </div>
+            <div className="mt-4 space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold">Template Name</label>
+                <Input
+                  placeholder="e.g. Sales Executive Form, IT Dev Application"
+                  value={currentConfig.name}
+                  onChange={(e) =>
+                    setCurrentConfig({ ...currentConfig, name: e.target.value })
+                  }
+                />
+              </div>
 
-            <div className="space-y-3">
-              <label className="text-sm font-semibold">Field Settings</label>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                {FIELD_NAMES.map((field) => {
-                  const currentValue =
-                    currentConfig.config[field.key] || "hidden";
-                  return (
-                    <div
-                      key={field.key}
-                      className="flex items-center justify-between rounded-lg border bg-white p-3"
-                    >
-                      <span className="text-sm font-medium">{field.label}</span>
-                      <div className="flex rounded-md bg-gray-100 p-0.5">
-                        {(["required", "shown", "hidden"] as const).map(
-                          (mode) => (
-                            <button
-                              key={mode}
-                              onClick={() => updateField(field.key, mode)}
-                              className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
-                                currentValue === mode
-                                  ? "text-primary bg-white shadow-sm"
-                                  : "text-gray-500 hover:text-gray-700"
-                              }`}
-                            >
-                              {mode === "shown" ? "Optional" : mode}
-                            </button>
-                          ),
-                        )}
+              <div className="space-y-3">
+                <label className="text-sm font-semibold">Field Settings</label>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {FIELD_NAMES.map((field) => {
+                    const currentValue =
+                      currentConfig.config[field.key] || "hidden";
+                    return (
+                      <div
+                        key={field.key}
+                        className="flex items-center justify-between rounded-lg border bg-white p-3"
+                      >
+                        <span className="text-sm font-medium">
+                          {field.label}
+                        </span>
+                        <div className="flex rounded-md bg-gray-100 p-0.5">
+                          {(["required", "shown", "hidden"] as const).map(
+                            (mode) => (
+                              <button
+                                key={mode}
+                                onClick={() => updateField(field.key, mode)}
+                                className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${
+                                  currentValue === mode
+                                    ? "text-primary bg-white shadow-sm"
+                                    : "text-gray-500 hover:text-gray-700"
+                                }`}
+                              >
+                                {mode === "shown" ? "Optional" : mode}
+                              </button>
+                            ),
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 flex justify-end gap-3">
+          <div className="flex shrink-0 justify-end gap-3 border-t bg-white p-4">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
