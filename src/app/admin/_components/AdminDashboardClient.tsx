@@ -385,6 +385,7 @@ function JobsView({
     string,
     "required" | "shown" | "hidden"
   > | null>(null);
+  const [editingJobForConfig, setEditingJobForConfig] = useState<any>(null);
   const [isCustomConfigOpen, setIsCustomConfigOpen] = useState(false);
 
   useEffect(() => {
@@ -653,10 +654,20 @@ function JobsView({
         </CardContent>
       </Card>
 
-      <Dialog open={isCustomConfigOpen} onOpenChange={setIsCustomConfigOpen}>
+      <Dialog
+        open={isCustomConfigOpen}
+        onOpenChange={(open) => {
+          setIsCustomConfigOpen(open);
+          if (!open) setEditingJobForConfig(null);
+        }}
+      >
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Custom Job Configuration</DialogTitle>
+            <DialogTitle>
+              {editingJobForConfig
+                ? `Custom Job Configuration — ${editingJobForConfig.title}`
+                : "Custom Job Configuration"}
+            </DialogTitle>
             <DialogDescription>
               Configure which fields are required, shown, or hidden for this
               specific job.
@@ -711,7 +722,12 @@ function JobsView({
                   FIELD_NAMES.forEach((f) => (initial[f.key] = "shown"));
                   setCustomConfig(initial);
                 }
+                // keep the dialog UX consistent; if editing an existing job we
+                // keep the edited config in memory (preview only)
                 setIsCustomConfigOpen(false);
+                if (editingJobForConfig) {
+                  toast.success("Configuration updated (preview)");
+                }
               }}
             >
               Apply Configuration
@@ -755,6 +771,20 @@ function JobsView({
                   }
                 >
                   {job.status === "published" ? "Close" : "Publish"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // preload custom config from job (either inline config or linked template)
+                    const preloaded =
+                      job.config || configs?.find((c: any) => c.id === job.configId)?.config || null;
+                    setCustomConfig(preloaded);
+                    setEditingJobForConfig(job);
+                    setIsCustomConfigOpen(true);
+                  }}
+                >
+                  Edit
                 </Button>
                 <Button
                   variant="destructive"

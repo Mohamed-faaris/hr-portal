@@ -284,206 +284,208 @@ export function JobApplicationModal({
             <div className="space-y-4 md:space-y-6">
               {/* Personal Information */}
               {isPanelVisible([
-                'fullName',
-                'email',
-                'phone',
-                'gender',
-                'dateOfBirth',
+                "fullName",
+                "email",
+                "phone",
+                "gender",
+                "dateOfBirth",
               ]) && (
                 <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
-                <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
-                  <User className="h-4 w-4 text-amber-600" /> Personal Details
-                </h3>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
-                  {isFieldVisible("fullName") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Full Name{" "}
-                        {isFieldRequired("fullName") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="fullName"
-                        required={isFieldRequired("fullName")}
-                        value={formData.fullName}
-                        onChange={handleInputChange}
-                        placeholder="John Doe"
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("email") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Email{" "}
-                        {isFieldRequired("email") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="email"
-                        type="email"
-                        required={isFieldRequired("email")}
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="john@example.com"
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("phone") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Phone{" "}
-                        {isFieldRequired("phone") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="phone"
-                        required={isFieldRequired("phone")}
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="+91..."
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("gender") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Gender{" "}
-                        {isFieldRequired("gender") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Select
-                        value={formData.gender}
-                        onValueChange={(val) =>
-                          handleSelectChange("gender", val)
-                        }
-                        required={isFieldRequired("gender")}
-                      >
-                        <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                  {isFieldVisible("dateOfBirth") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Date of Birth{" "}
-                        {isFieldRequired("dateOfBirth") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="dateOfBirth"
-                        type="date"
-                        required={isFieldRequired("dateOfBirth")}
-                        value={formData.dateOfBirth}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
+                  <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
+                    <User className="h-4 w-4 text-amber-600" /> Personal Details
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+                    {isFieldVisible("fullName") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Full Name{" "}
+                          {isFieldRequired("fullName") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="fullName"
+                          required={isFieldRequired("fullName")}
+                          value={formData.fullName}
+                          onChange={handleInputChange}
+                          placeholder="John Doe"
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("email") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Email{" "}
+                          {isFieldRequired("email") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="email"
+                          type="email"
+                          required={isFieldRequired("email")}
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="john@example.com"
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("phone") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Phone{" "}
+                          {isFieldRequired("phone") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="phone"
+                          required={isFieldRequired("phone")}
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="+91..."
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("gender") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Gender{" "}
+                          {isFieldRequired("gender") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Select
+                          value={formData.gender}
+                          onValueChange={(val) =>
+                            handleSelectChange("gender", val)
+                          }
+                          required={isFieldRequired("gender")}
+                        >
+                          <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                    {isFieldVisible("dateOfBirth") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Date of Birth{" "}
+                          {isFieldRequired("dateOfBirth") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="dateOfBirth"
+                          type="date"
+                          required={isFieldRequired("dateOfBirth")}
+                          value={formData.dateOfBirth}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
               )}
 
               {/* Location */}
               {isPanelVisible([
-                'currentLocation',
-                'preferredWorkLocation',
-                'preferredJobType',
+                "currentLocation",
+                "preferredWorkLocation",
+                "preferredJobType",
               ]) && (
                 <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
-                <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
-                  <MapPin className="h-4 w-4 text-amber-600" /> Location &
-                  Preferences
-                </h3>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
-                  {isFieldVisible("currentLocation") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Current Location{" "}
-                        {isFieldRequired("currentLocation") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="currentLocation"
-                        required={isFieldRequired("currentLocation")}
-                        value={formData.currentLocation}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("preferredWorkLocation") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Preferred Location{" "}
-                        {isFieldRequired("preferredWorkLocation") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="preferredWorkLocation"
-                        required={isFieldRequired("preferredWorkLocation")}
-                        value={formData.preferredWorkLocation}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
+                  <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
+                    <MapPin className="h-4 w-4 text-amber-600" /> Location &
+                    Preferences
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+                    {isFieldVisible("currentLocation") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Current Location{" "}
+                          {isFieldRequired("currentLocation") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="currentLocation"
+                          required={isFieldRequired("currentLocation")}
+                          value={formData.currentLocation}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("preferredWorkLocation") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Preferred Location{" "}
+                          {isFieldRequired("preferredWorkLocation") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="preferredWorkLocation"
+                          required={isFieldRequired("preferredWorkLocation")}
+                          value={formData.preferredWorkLocation}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
 
-                  {isFieldVisible("preferredJobType") && (
-                    <div className="space-y-3 pt-2 md:col-span-2">
-                      <Label className="text-stone-600">
-                        Job Type{" "}
-                        {isFieldRequired("preferredJobType") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <RadioGroup
-                        defaultValue="Full-time"
-                        value={formData.preferredJobType}
-                        onValueChange={(val) =>
-                          handleSelectChange("preferredJobType", val)
-                        }
-                        className="flex flex-wrap gap-3 md:gap-4"
-                      >
-                        {["Full-time", "Part-time", "Contract"].map((type) => (
-                          <div
-                            key={type}
-                            className="flex min-w-[100px] flex-1 items-center space-x-2 rounded-lg border border-stone-200 bg-white px-3 py-2 transition-colors hover:bg-stone-50 md:px-4 md:py-3"
-                          >
-                            <RadioGroupItem
-                              value={type}
-                              id={type}
-                              className="border-stone-400 text-amber-600"
-                            />
-                            <Label
-                              htmlFor={type}
-                              className="w-full cursor-pointer text-sm font-normal text-stone-700 md:text-base"
-                            >
-                              {type}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                  )}
+                    {isFieldVisible("preferredJobType") && (
+                      <div className="space-y-3 pt-2 md:col-span-2">
+                        <Label className="text-stone-600">
+                          Job Type{" "}
+                          {isFieldRequired("preferredJobType") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <RadioGroup
+                          defaultValue="Full-time"
+                          value={formData.preferredJobType}
+                          onValueChange={(val) =>
+                            handleSelectChange("preferredJobType", val)
+                          }
+                          className="flex flex-wrap gap-3 md:gap-4"
+                        >
+                          {["Full-time", "Part-time", "Contract"].map(
+                            (type) => (
+                              <div
+                                key={type}
+                                className="flex min-w-[100px] flex-1 items-center space-x-2 rounded-lg border border-stone-200 bg-white px-3 py-2 transition-colors hover:bg-stone-50 md:px-4 md:py-3"
+                              >
+                                <RadioGroupItem
+                                  value={type}
+                                  id={type}
+                                  className="border-stone-400 text-amber-600"
+                                />
+                                <Label
+                                  htmlFor={type}
+                                  className="w-full cursor-pointer text-sm font-normal text-stone-700 md:text-base"
+                                >
+                                  {type}
+                                </Label>
+                              </div>
+                            ),
+                          )}
+                        </RadioGroup>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
               )}
             </div>
 
@@ -491,289 +493,289 @@ export function JobApplicationModal({
             <div className="space-y-4 md:space-y-6">
               {/* Professional & Education */}
               {isPanelVisible([
-                'totalExperience',
-                'highestQualification',
-                'currentCompany',
-                'currentDesignation',
-                'currentSalary',
-                'expectedSalary',
-                'keySkills',
-                'linkedinProfile',
-                'portfolio',
+                "totalExperience",
+                "highestQualification",
+                "currentCompany",
+                "currentDesignation",
+                "currentSalary",
+                "expectedSalary",
+                "keySkills",
+                "linkedinProfile",
+                "portfolio",
               ]) && (
                 <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
-                <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
-                  <Briefcase className="h-4 w-4 text-amber-600" /> Professional
-                  Details
-                </h3>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
-                  {isFieldVisible("totalExperience") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Total Experience{" "}
-                        {isFieldRequired("totalExperience") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Select
-                        value={formData.totalExperience}
-                        onValueChange={(val) =>
-                          handleSelectChange("totalExperience", val)
-                        }
-                        required={isFieldRequired("totalExperience")}
-                      >
-                        <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="fresher">Fresher</SelectItem>
-                          <SelectItem value="0-1">0 - 1 Years</SelectItem>
-                          <SelectItem value="1-3">1 - 3 Years</SelectItem>
-                          <SelectItem value="3-5">3 - 5 Years</SelectItem>
-                          <SelectItem value="5-10">5 - 10 Years</SelectItem>
-                          <SelectItem value="10+">10+ Years</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                  {isFieldVisible("highestQualification") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Highest Qualification{" "}
-                        {isFieldRequired("highestQualification") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Select
-                        value={formData.highestQualification}
-                        onValueChange={(val) =>
-                          handleSelectChange("highestQualification", val)
-                        }
-                        required={isFieldRequired("highestQualification")}
-                      >
-                        <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="doctorate">
-                            Ph.D / Doctorate
-                          </SelectItem>
-                          <SelectItem value="post-graduate">
-                            Post Graduate
-                          </SelectItem>
-                          <SelectItem value="graduate">Graduate</SelectItem>
-                          <SelectItem value="diploma">Diploma</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                  {isFieldVisible("currentCompany") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Current Company{" "}
-                        {isFieldRequired("currentCompany") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="currentCompany"
-                        required={isFieldRequired("currentCompany")}
-                        value={formData.currentCompany}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("currentDesignation") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Current Designation{" "}
-                        {isFieldRequired("currentDesignation") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="currentDesignation"
-                        required={isFieldRequired("currentDesignation")}
-                        value={formData.currentDesignation}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("currentSalary") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Current Salary{" "}
-                        {isFieldRequired("currentSalary") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="currentSalary"
-                        required={isFieldRequired("currentSalary")}
-                        value={formData.currentSalary}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("expectedSalary") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Expected Salary{" "}
-                        {isFieldRequired("expectedSalary") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="expectedSalary"
-                        required={isFieldRequired("expectedSalary")}
-                        value={formData.expectedSalary}
-                        onChange={handleInputChange}
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("keySkills") && (
-                    <div className="space-y-2 md:col-span-2">
-                      <Label className="text-stone-600">
-                        Key Skills{" "}
-                        {isFieldRequired("keySkills") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Textarea
-                        name="keySkills"
-                        required={isFieldRequired("keySkills")}
-                        value={formData.keySkills}
-                        onChange={handleInputChange}
-                        placeholder="React, Java, Python..."
-                        className="min-h-[60px] resize-none border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("linkedinProfile") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        LinkedIn Profile{" "}
-                        {isFieldRequired("linkedinProfile") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="linkedinProfile"
-                        required={isFieldRequired("linkedinProfile")}
-                        value={formData.linkedinProfile}
-                        onChange={handleInputChange}
-                        placeholder="https://linkedin.com/in/..."
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                  {isFieldVisible("portfolio") && (
-                    <div className="space-y-2">
-                      <Label className="text-stone-600">
-                        Portfolio{" "}
-                        {isFieldRequired("portfolio") && (
-                          <span className="text-red-500">*</span>
-                        )}
-                      </Label>
-                      <Input
-                        name="portfolio"
-                        required={isFieldRequired("portfolio")}
-                        value={formData.portfolio}
-                        onChange={handleInputChange}
-                        placeholder="https://yourportfolio.com"
-                        className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-              )}
-
-              {/* Resume & Captcha */}
-              {isPanelVisible(['resumeUrl']) && (
-                <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
-                <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
-                  <Paperclip className="h-4 w-4 text-amber-600" /> Resume
-                  Verification
-                </h3>
-
-                <div className="space-y-3">
-                  <Label className="text-stone-600">
-                    Upload Resume{" "}
-                    {isFieldRequired("resumeUrl") && (
-                      <span className="text-red-500">*</span>
-                    )}
-                  </Label>
-                  <div className="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-amber-200 bg-amber-50/30 p-4 text-center transition-colors hover:bg-amber-50 md:p-8">
-                    <Input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange}
-                      required={isFieldRequired("resumeUrl")}
-                      className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
-                    />
-
-                    {resume ? (
-                      <div className="flex flex-col items-center gap-2 text-green-700">
-                        <div className="rounded-full bg-green-100 p-2">
-                          <CheckCircle2 className="h-6 w-6" />
-                        </div>
-                        <span className="max-w-[200px] truncate text-sm font-medium">
-                          {resume.name}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="relative z-20 h-6 px-2 text-xs text-red-500 hover:bg-red-50 hover:text-red-600"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setResume(null);
-                          }}
+                  <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
+                    <Briefcase className="h-4 w-4 text-amber-600" />{" "}
+                    Professional Details
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+                    {isFieldVisible("totalExperience") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Total Experience{" "}
+                          {isFieldRequired("totalExperience") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Select
+                          value={formData.totalExperience}
+                          onValueChange={(val) =>
+                            handleSelectChange("totalExperience", val)
+                          }
+                          required={isFieldRequired("totalExperience")}
                         >
-                          Remove
-                        </Button>
+                          <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="fresher">Fresher</SelectItem>
+                            <SelectItem value="0-1">0 - 1 Years</SelectItem>
+                            <SelectItem value="1-3">1 - 3 Years</SelectItem>
+                            <SelectItem value="3-5">3 - 5 Years</SelectItem>
+                            <SelectItem value="5-10">5 - 10 Years</SelectItem>
+                            <SelectItem value="10+">10+ Years</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                    ) : (
-                      <>
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 transition-transform group-hover:scale-110 md:h-12 md:w-12">
-                          <UploadCloud className="h-5 w-5 md:h-6 md:w-6" />
-                        </div>
-                        <p className="text-sm font-medium text-stone-700">
-                          Click to upload or drag and drop
-                        </p>
-                        <p className="mt-1 text-xs text-stone-500">
-                          PDF, DOC, DOCX (Max 5MB)
-                        </p>
-                      </>
+                    )}
+                    {isFieldVisible("highestQualification") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Highest Qualification{" "}
+                          {isFieldRequired("highestQualification") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Select
+                          value={formData.highestQualification}
+                          onValueChange={(val) =>
+                            handleSelectChange("highestQualification", val)
+                          }
+                          required={isFieldRequired("highestQualification")}
+                        >
+                          <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="doctorate">
+                              Ph.D / Doctorate
+                            </SelectItem>
+                            <SelectItem value="post-graduate">
+                              Post Graduate
+                            </SelectItem>
+                            <SelectItem value="graduate">Graduate</SelectItem>
+                            <SelectItem value="diploma">Diploma</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                    {isFieldVisible("currentCompany") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Current Company{" "}
+                          {isFieldRequired("currentCompany") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="currentCompany"
+                          required={isFieldRequired("currentCompany")}
+                          value={formData.currentCompany}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("currentDesignation") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Current Designation{" "}
+                          {isFieldRequired("currentDesignation") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="currentDesignation"
+                          required={isFieldRequired("currentDesignation")}
+                          value={formData.currentDesignation}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("currentSalary") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Current Salary{" "}
+                          {isFieldRequired("currentSalary") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="currentSalary"
+                          required={isFieldRequired("currentSalary")}
+                          value={formData.currentSalary}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("expectedSalary") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Expected Salary{" "}
+                          {isFieldRequired("expectedSalary") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="expectedSalary"
+                          required={isFieldRequired("expectedSalary")}
+                          value={formData.expectedSalary}
+                          onChange={handleInputChange}
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("keySkills") && (
+                      <div className="space-y-2 md:col-span-2">
+                        <Label className="text-stone-600">
+                          Key Skills{" "}
+                          {isFieldRequired("keySkills") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Textarea
+                          name="keySkills"
+                          required={isFieldRequired("keySkills")}
+                          value={formData.keySkills}
+                          onChange={handleInputChange}
+                          placeholder="React, Java, Python..."
+                          className="min-h-[60px] resize-none border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("linkedinProfile") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          LinkedIn Profile{" "}
+                          {isFieldRequired("linkedinProfile") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="linkedinProfile"
+                          required={isFieldRequired("linkedinProfile")}
+                          value={formData.linkedinProfile}
+                          onChange={handleInputChange}
+                          placeholder="https://linkedin.com/in/..."
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
+                    )}
+                    {isFieldVisible("portfolio") && (
+                      <div className="space-y-2">
+                        <Label className="text-stone-600">
+                          Portfolio{" "}
+                          {isFieldRequired("portfolio") && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          name="portfolio"
+                          required={isFieldRequired("portfolio")}
+                          value={formData.portfolio}
+                          onChange={handleInputChange}
+                          placeholder="https://yourportfolio.com"
+                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
+              )}
 
-                {/* Captcha */}
-                <div className="flex origin-center scale-90 justify-center pt-2 md:scale-100 md:pt-4">
-                  {isRecaptchaEnabled ? (
-                    <ReCAPTCHA
-                      ref={recaptchaRef}
-                      sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
-                      onChange={handleCaptchaChange}
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-center">
-                      <span className="text-xs font-bold tracking-wider text-amber-600 uppercase">
-                        reCAPTCHA Disabled
-                      </span>
-                      <p className="text-[11px] text-amber-700">
-                        Verification bypassed for current environment.
-                      </p>
+              {/* Resume & Captcha */}
+              {isPanelVisible(["resumeUrl"]) && (
+                <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm md:space-y-5 md:p-6">
+                  <h3 className="flex items-center gap-2 border-b border-stone-100 pb-3 text-sm font-bold tracking-wider text-stone-800 uppercase">
+                    <Paperclip className="h-4 w-4 text-amber-600" /> Resume
+                    Verification
+                  </h3>
+
+                  <div className="space-y-3">
+                    <Label className="text-stone-600">
+                      Upload Resume{" "}
+                      {isFieldRequired("resumeUrl") && (
+                        <span className="text-red-500">*</span>
+                      )}
+                    </Label>
+                    <div className="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-amber-200 bg-amber-50/30 p-4 text-center transition-colors hover:bg-amber-50 md:p-8">
+                      <Input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange}
+                        required={isFieldRequired("resumeUrl")}
+                        className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                      />
+
+                      {resume ? (
+                        <div className="flex flex-col items-center gap-2 text-green-700">
+                          <div className="rounded-full bg-green-100 p-2">
+                            <CheckCircle2 className="h-6 w-6" />
+                          </div>
+                          <span className="max-w-[200px] truncate text-sm font-medium">
+                            {resume.name}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="relative z-20 h-6 px-2 text-xs text-red-500 hover:bg-red-50 hover:text-red-600"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setResume(null);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 transition-transform group-hover:scale-110 md:h-12 md:w-12">
+                            <UploadCloud className="h-5 w-5 md:h-6 md:w-6" />
+                          </div>
+                          <p className="text-sm font-medium text-stone-700">
+                            Click to upload or drag and drop
+                          </p>
+                          <p className="mt-1 text-xs text-stone-500">
+                            PDF, DOC, DOCX (Max 5MB)
+                          </p>
+                        </>
+                      )}
                     </div>
-                  )}
+                  </div>
+
+                  {/* Captcha */}
+                  <div className="flex origin-center scale-90 justify-center pt-2 md:scale-100 md:pt-4">
+                    {isRecaptchaEnabled ? (
+                      <ReCAPTCHA
+                        ref={recaptchaRef}
+                        sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
+                        onChange={handleCaptchaChange}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-center">
+                        <span className="text-xs font-bold tracking-wider text-amber-600 uppercase">
+                          reCAPTCHA Disabled
+                        </span>
+                        <p className="text-[11px] text-amber-700">
+                          Verification bypassed for current environment.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
               )}
             </div>
           </form>
