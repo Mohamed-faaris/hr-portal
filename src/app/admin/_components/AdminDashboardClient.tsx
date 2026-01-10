@@ -778,7 +778,10 @@ function JobsView({
                   onClick={() => {
                     // preload custom config from job (either inline config or linked template)
                     const preloaded =
-                      job.config || configs?.find((c: any) => c.id === job.configId)?.config || null;
+                      job.config ||
+                      configs?.find((c: any) => c.id === job.configId)
+                        ?.config ||
+                      null;
                     setCustomConfig(preloaded);
                     setEditingJobForConfig(job);
                     setIsCustomConfigOpen(true);
