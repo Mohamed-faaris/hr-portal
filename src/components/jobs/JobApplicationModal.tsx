@@ -58,9 +58,7 @@ export function JobApplicationModal({
 
   // Only enable reCAPTCHA in environments other than development/production
   // (per request: remove/disable reCAPTCHA when runtime env is dev or prod)
-  const isRecaptchaEnabled =
-    env.NODE_ENV !== "development" && env.NODE_ENV !== "production";
-
+  const isRecaptchaEnabled = false;
   useEffect(() => {
     if (!isRecaptchaEnabled) {
       // set a bypass token so submission can proceed when captcha is disabled
@@ -100,7 +98,8 @@ export function JobApplicationModal({
   };
 
   const isFieldVisible = (name: string) => {
-    return config[name] !== "hidden";
+    const val = config?.[name];
+    return val === "shown" || val === "required";
   };
 
   const isFieldRequired = (name: string) => {
