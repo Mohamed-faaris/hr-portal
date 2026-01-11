@@ -4,6 +4,7 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/
 import { applications, jobs, DEFAULT_JOB_CONFIG } from "~/server/db/schema";
 import { desc, eq, sql } from "drizzle-orm";
 import { buildFormSchema } from "~/lib/formValidation";
+import { validateRecaptcha } from "~/lib/recaptcha";
 
 export const applicationsRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -96,6 +97,17 @@ export const applicationsRouter = createTRPCRouter({
       const job = await ctx.db.query.jobs.findFirst({ where: eq(jobs.id, input.jobId) });
       const config = job?.config ?? DEFAULT_JOB_CONFIG;
 
+      // Validate reCAPTCHA token if provided
+      if (input.captchaToken) {
+        const isValidCaptcha = await validateRecaptcha(input.captchaToken);
+        if (!isValidCaptcha) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "reCAPTCHA verification failed. Please try again.",
+          });
+        }
+      }
+
       // Fields we allow in applications table
       const allowedFields = [
         'fullName',
@@ -122,11 +134,6 @@ export const applicationsRouter = createTRPCRouter({
       ];
 
       const values: Record<string, any> = { jobId: input.jobId };
-
-      // include captchaToken if present
-      if (input.captchaToken) {
-        values.captchaToken = input.captchaToken;
-      }
 
       // Validate required fields using shared Zod schema and only include shown/required fields
       try {
