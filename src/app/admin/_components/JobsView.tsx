@@ -531,7 +531,7 @@ export default function JobsView({
                     {job.status === "published" ? "Close" : "Publish"}
                   </Button>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href={`/admin/applicants?jobId=${job.id}`}>
+                    <Link href={`/admin/applicants/${job.id}`}>
                       <Users className="mr-2 h-3.5 w-3.5" />
                       View Applicants
                     </Link>
