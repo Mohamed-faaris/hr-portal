@@ -4,7 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -63,9 +64,9 @@
   --secondary-foreground: oklch(0.28 0.034 267);
   --muted: oklch(0.96 0.006 267);
   --muted-foreground: oklch(0.56 0.014 267);
-  --accent: oklch(0.70 0.156 92);
+  --accent: oklch(0.7 0.156 92);
   --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.60 0.182 29);
+  --destructive: oklch(0.6 0.182 29);
   --border: oklch(0.92 0.006 267);
   --input: oklch(0.92 0.006 267);
   --ring: oklch(0.29 0.155 270);
@@ -78,7 +79,7 @@
   --sidebar-foreground: oklch(0.28 0.034 267);
   --sidebar-primary: oklch(0.29 0.155 270);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.70 0.156 92);
+  --sidebar-accent: oklch(0.7 0.156 92);
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(0.92 0.006 267);
   --sidebar-ring: oklch(0.29 0.155 270);
@@ -130,7 +131,12 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
 }
@@ -143,10 +149,10 @@
     @apply py-16 md:py-24;
   }
   .card-corporate {
-    @apply bg-card rounded-lg shadow-md border border-border p-6 transition-all duration-300 ease-out transform-gpu hover:-translate-y-2 hover:scale-105 hover:shadow-xl hover:border-primary/30;
+    @apply bg-card border-border hover:border-primary/30 transform-gpu rounded-lg border p-6 shadow-md transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-105 hover:shadow-xl;
   }
   .nav-link {
-    @apply text-foreground/80 hover:text-primary transition-colors font-medium;
+    @apply text-foreground/80 hover:text-primary font-medium transition-colors;
   }
   .nav-link-active {
     @apply text-primary font-semibold;

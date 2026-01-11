@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import ApplicantsView from "../_components/ApplicantsView";
+import type { ApplicantStatus } from "~/types";
 
 function ApplicantsContent() {
   const searchParams = useSearchParams();
@@ -18,11 +19,41 @@ function ApplicantsContent() {
 
   const updateApplicantStatusMutation =
     api.applications.updateStatus.useMutation({
+      onMutate: async ({ id, status }) => {
+        // Cancel outgoing refetches
+        await utils.applications.getAll.cancel();
+
+        // Snapshot previous data
+        const previousApplicants = utils.applications.getAll.getData();
+
+        // Optimistically update to new value
+        utils.applications.getAll.setData(undefined, (old) => {
+          if (!old) return old;
+          return old.map((app) =>
+            app.id === id ? { ...app, status: status as ApplicantStatus } : app,
+          );
+        });
+
+        // Return context with snapshotted value
+        return { previousApplicants };
+      },
+      onError: (err, _newStatus, context) => {
+        // Rollback on error
+        if (context?.previousApplicants) {
+          utils.applications.getAll.setData(
+            undefined,
+            context.previousApplicants,
+          );
+        }
+        toast.error(`Failed to update status: ${err.message}`);
+      },
       onSuccess: () => {
         toast.success("Applicant status updated!");
+      },
+      onSettled: () => {
+        // Refetch after error or success
         void utils.applications.getAll.invalidate();
       },
-      onError: (err) => toast.error(err.message),
     });
 
   return (
@@ -31,7 +62,7 @@ function ApplicantsContent() {
       jobs={jobs}
       loading={appLoading}
       initialJobId={initialJobId}
-      updateStatus={(id: string, status: string) =>
+      updateStatus={(id: string, status: ApplicantStatus) =>
         updateApplicantStatusMutation.mutate({ id, status })
       }
     />
