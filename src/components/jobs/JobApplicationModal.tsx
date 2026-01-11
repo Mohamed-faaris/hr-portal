@@ -158,12 +158,14 @@ export function JobApplicationModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate form using Zod built from job config (omit resumeUrl here — file is validated separately)
-    const schema = buildFormSchema(config as Record<string, string>).omit({
-      resumeUrl: true,
-    });
+    // Validate form using Zod built from job config; include resume presence via `resumeUrl`
+    const schema = buildFormSchema(config as Record<string, string>);
+    const validationInput = {
+      ...formData,
+      resumeUrl: resume ? resume.name : "",
+    };
     try {
-      schema.parse(formData as any);
+      schema.parse(validationInput as any);
     } catch (err) {
       // Show first Zod error in toast
       if (err instanceof z.ZodError) {
@@ -176,15 +178,6 @@ export function JobApplicationModal({
         return;
       }
       // Unknown error: continue to normal error handling below
-    }
-
-    if (!resume) {
-      toast({
-        title: "Resume Required",
-        description: "Please upload your resume.",
-        variant: "destructive",
-      });
-      return;
     }
 
     if (!captchaToken && isRecaptchaEnabled) {
