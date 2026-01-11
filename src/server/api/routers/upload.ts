@@ -12,7 +12,7 @@ export const uploadRouter = createTRPCRouter({
             z.object({
                 fileName: z.string(),
                 fileType: z.string(),
-                jobId: z.string().optional(),
+                jobId: z.string(),
                 applicantName: z.string().optional(),
                 applicantEmail: z.string().optional(),
             })
@@ -37,7 +37,7 @@ export const uploadRouter = createTRPCRouter({
             const rand = Math.floor(Math.random() * 90000) + 10000;
             const ts = Date.now();
 
-            const key = `resume/${jobId ?? "unknown"}/${baseName}${emailPart ? `-${emailPart}` : ""}-${rand}-${ts}${ext}`;
+            const key = `resume/${jobId}/${baseName}${emailPart ? `-${emailPart}` : ""}-${rand}-${ts}${ext}`;
 
             const command = new PutObjectCommand({
                 Bucket: env.S3_BUCKET_NAME,
