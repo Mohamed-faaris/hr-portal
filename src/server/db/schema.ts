@@ -1,11 +1,5 @@
 import { pgTable, serial, text, timestamp, boolean, integer, uuid, jsonb } from 'drizzle-orm/pg-core'
 
-export const todos = pgTable('todos', {
-  id: serial().primaryKey(),
-  title: text().notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-})
-
 // Better Auth tables
 export const user = pgTable('user', {
   id: text('id').primaryKey(),

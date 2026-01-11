@@ -15,7 +15,6 @@ export const appRouter = createTRPCRouter({
   jobs: jobsRouter,
   applications: applicationsRouter,
   jobConfigs: jobConfigsRouter,
-  todos: todosRouter,
   upload: uploadRouter,
   downloads: downloadsRouter,
 });
