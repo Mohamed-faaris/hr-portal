@@ -11,6 +11,18 @@ export const applicationsRouter = createTRPCRouter({
       orderBy: [desc(applications.appliedAt)],
     });
   }),
+  getByJob: protectedProcedure
+    .input(
+      z.object({
+        jobId: z.string().uuid(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.query.applications.findMany({
+        where: eq(applications.jobId, input.jobId),
+        orderBy: [desc(applications.appliedAt)],
+      });
+    }),
 
   updateStatus: protectedProcedure
     .input(z.object({

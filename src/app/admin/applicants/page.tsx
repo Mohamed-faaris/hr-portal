@@ -2,7 +2,7 @@
 
 import { api } from "~/trpc/react";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import ApplicantsView from "../_components/ApplicantsView";
 import type { ApplicantStatus } from "~/types";
@@ -11,6 +11,14 @@ function ApplicantsContent() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
   const [initialJobId, setInitialJobId] = useState<string | null>(jobId);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (jobId) {
+      // redirect legacy query-string route to new route for job-specific view
+      void router.push(`/admin/applicants/${encodeURIComponent(jobId)}`);
+    }
+  }, [jobId, router]);
 
   const utils = api.useUtils();
   const { data: jobs = [] } = api.jobs.getAllAdmin.useQuery();
