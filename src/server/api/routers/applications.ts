@@ -2,14 +2,26 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
 import { applications, jobs, DEFAULT_JOB_CONFIG } from "~/server/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { buildFormSchema } from "~/lib/formValidation";
 
 export const applicationsRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.query.applications.findMany({
-      orderBy: [desc(applications.appliedAt)],
-    });
+    // Get all jobs with application count, sorted by most recent applications first
+    const jobsWithCounts = await ctx.db
+      .select({
+        id: jobs.id,
+        title: jobs.title,
+        location: jobs.location,
+        applicationCount: sql<number>`COUNT(${applications.id})`.mapWith(Number),
+        lastApplicationAt: sql<string>`MAX(${applications.appliedAt})`.mapWith(String),
+      })
+      .from(jobs)
+      .leftJoin(applications, eq(jobs.id, applications.jobId))
+      .groupBy(jobs.id)
+      .orderBy(desc(sql`MAX(${applications.appliedAt})`));
+
+    return jobsWithCounts;
   }),
   getByJob: protectedProcedure
     .input(

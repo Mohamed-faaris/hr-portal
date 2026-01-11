@@ -44,7 +44,7 @@ export default function JobApplicantsClient({ jobId }: { jobId: string }) {
       onSuccess: () => {
         toast.success("Applicant status updated!");
       },
-      onSettled: () => void utils.applications.getAll.invalidate(),
+      onSettled: () => void utils.applications.getByJob.invalidate({ jobId }),
     });
 
   return (
