@@ -1,7 +1,9 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
 import { applications, jobs, DEFAULT_JOB_CONFIG } from "~/server/db/schema";
 import { desc, eq } from "drizzle-orm";
+import { buildFormSchema } from "~/lib/formValidation";
 
 export const applicationsRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -102,18 +104,23 @@ export const applicationsRouter = createTRPCRouter({
         values.captchaToken = input.captchaToken;
       }
 
-      // Validate required fields and only include shown/required fields
+      // Validate required fields using shared Zod schema and only include shown/required fields
+      try {
+        const schema = buildFormSchema(config as Record<string, string>).passthrough();
+        schema.parse(input);
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          const first = err.errors[0];
+          throw new TRPCError({ code: "BAD_REQUEST", message: first?.message ?? "Invalid input" });
+        }
+        throw err;
+      }
+
       for (const field of allowedFields) {
         const cfg = (config as Record<string, string>)?.[field];
         if (cfg === 'hidden') continue; // skip hidden fields
 
         const val = (input as any)[field];
-        if (cfg === 'required') {
-          if (val === undefined || val === null || (typeof val === 'string' && val.trim() === '')) {
-            throw new Error(`Missing required field: ${field}`);
-          }
-        }
-
         if (val !== undefined) {
           values[field] = val;
         }

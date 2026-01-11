@@ -21,6 +21,8 @@ import {
 import { Textarea } from "~/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
+import { z } from "zod";
+import { buildFormSchema } from "~/lib/formValidation";
 import {
   UploadCloud,
   FileText,
@@ -155,6 +157,26 @@ export function JobApplicationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate form using Zod built from job config (omit resumeUrl here — file is validated separately)
+    const schema = buildFormSchema(config as Record<string, string>).omit({
+      resumeUrl: true,
+    });
+    try {
+      schema.parse(formData as any);
+    } catch (err) {
+      // Show first Zod error in toast
+      if (err instanceof z.ZodError) {
+        const first = err.errors[0];
+        toast({
+          title: "Validation Error",
+          description: first?.message ?? "Please check the form fields.",
+          variant: "destructive",
+        });
+        return;
+      }
+      // Unknown error: continue to normal error handling below
+    }
 
     if (!resume) {
       toast({
