@@ -192,32 +192,37 @@ export function JobApplicationModal({
     setIsSubmitting(true);
 
     try {
-      // Get presigned URL for upload
-      const { uploadUrl, url } = await getPresignedUrl.mutateAsync({
-        fileName: resume.name,
-        fileType: resume.type,
-        jobId: job.id,
-        applicantName: formData.fullName,
-        applicantEmail: formData.email,
-      });
+      let resumeUrl: string | undefined = undefined;
+      if (resume) {
+        // Get presigned URL for upload
+        const { uploadUrl, url } = await getPresignedUrl.mutateAsync({
+          fileName: resume.name,
+          fileType: resume.type,
+          jobId: job.id,
+          applicantName: formData.fullName,
+          applicantEmail: formData.email,
+        });
 
-      // Upload file to S3/Backblaze
-      const uploadResponse = await fetch(uploadUrl, {
-        method: "PUT",
-        body: resume,
-        headers: {
-          "Content-Type": resume.type,
-        },
-      });
+        // Upload file to S3/Backblaze
+        const uploadResponse = await fetch(uploadUrl, {
+          method: "PUT",
+          body: resume,
+          headers: {
+            "Content-Type": resume.type,
+          },
+        });
 
-      if (!uploadResponse.ok) {
-        throw new Error("Failed to upload resume");
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload resume");
+        }
+
+        resumeUrl = url;
       }
 
       await createApplication.mutateAsync({
         jobId: job.id,
         captchaToken: captchaToken,
-        resumeUrl: url,
+        ...(resumeUrl ? { resumeUrl } : {}),
         ...formData,
       });
 
