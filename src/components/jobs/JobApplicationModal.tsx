@@ -203,6 +203,9 @@ export function JobApplicationModal({
       const { uploadUrl, url } = await getPresignedUrl.mutateAsync({
         fileName: resume.name,
         fileType: resume.type,
+        jobId: job.id,
+        applicantName: formData.fullName,
+        applicantEmail: formData.email,
       });
 
       // Upload file to S3/Backblaze

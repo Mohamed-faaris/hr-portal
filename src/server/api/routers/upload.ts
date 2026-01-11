@@ -4,6 +4,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "~/lib/s3";
 import { env } from "~/env";
+import path from "path";
 
 export const uploadRouter = createTRPCRouter({
     getPresignedUrl: publicProcedure
@@ -11,11 +12,32 @@ export const uploadRouter = createTRPCRouter({
             z.object({
                 fileName: z.string(),
                 fileType: z.string(),
+                jobId: z.string().optional(),
+                applicantName: z.string().optional(),
+                applicantEmail: z.string().optional(),
             })
         )
         .mutation(async ({ input }) => {
-            const { fileName, fileType } = input;
-            const key = `${crypto.randomUUID()}-${fileName}`;
+            const { fileName, fileType, jobId, applicantName, applicantEmail } = input;
+
+            const ext = path.extname(fileName) || "";
+            const originalBase = path.basename(fileName, ext);
+
+            const sanitize = (s?: string) =>
+                (s || "")
+                    .toString()
+                    .normalize("NFKD")
+                    .replace(/[^a-zA-Z0-9@._\- ]+/g, "")
+                    .trim()
+                    .replace(/\s+/g, "_")
+                    .toLowerCase();
+
+            const baseName = applicantName ? sanitize(applicantName) : sanitize(originalBase);
+            const emailPart = applicantEmail ? sanitize(applicantEmail).replace(/@/g, "_") : "";
+            const rand = Math.floor(Math.random() * 90000) + 10000;
+            const ts = Date.now();
+
+            const key = `resume/${jobId ?? "unknown"}/${baseName}${emailPart ? `-${emailPart}` : ""}-${rand}-${ts}${ext}`;
 
             const command = new PutObjectCommand({
                 Bucket: env.S3_BUCKET_NAME,
@@ -30,9 +52,6 @@ export const uploadRouter = createTRPCRouter({
             return {
                 uploadUrl: signedUrl,
                 key,
-                // The public URL depends on how Backblaze is configured. 
-                // Usually it's https://<bucket>.<endpoint>/<key> or https://<endpoint>/<bucket>/<key>
-                // For Backblaze with forcePathStyle: true, it's often https://<endpoint>/<bucket>/<key>
                 url: `${env.S3_ENDPOINT}/${env.S3_BUCKET_NAME}/${key}`,
             };
         }),
