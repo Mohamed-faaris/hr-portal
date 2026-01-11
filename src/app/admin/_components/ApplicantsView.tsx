@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronLeft, Download, Loader2 } from "lucide-react";
+import { ChevronLeft, Download, Loader2, FileDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type {
   ColumnDef,
@@ -14,6 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import JSZip from "jszip";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -56,13 +57,8 @@ function ResumeLinkCell({ resumeUrl }: { resumeUrl: string }) {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("Resume View button clicked", { resumeUrl, isLoading });
 
     if (!resumeUrl || isLoading) {
-      console.warn("Invalid state: no resumeUrl or already loading", {
-        resumeUrl,
-        isLoading,
-      });
       return;
     }
 
@@ -70,28 +66,17 @@ function ResumeLinkCell({ resumeUrl }: { resumeUrl: string }) {
     setError(null);
 
     try {
-      console.log("Fetching presigned URL for:", resumeUrl);
-
-      // Call the TRPC query directly through the utils client
       const presignedUrl =
         await trpcUtils.client.downloads.getPresignedUrl.query({
           fileUrl: resumeUrl,
         });
 
-      console.log(
-        "Presigned URL generated successfully:",
-        presignedUrl?.substring(0, 50) + "...",
-      );
-
       if (presignedUrl) {
-        console.log("Opening presigned URL in new tab");
         window.open(presignedUrl, "_blank");
       } else {
-        console.warn("No presigned URL returned");
         setError("Failed to generate download link");
       }
     } catch (error) {
-      console.error("Error generating presigned URL:", error);
       setError(
         error instanceof Error
           ? error.message
@@ -167,6 +152,8 @@ export default function ApplicantsView({
   const [optimisticUpdates, setOptimisticUpdates] = useState<
     Record<string, ApplicantStatus>
   >({});
+  const [downloadingAll, setDownloadingAll] = useState(false);
+  const trpcUtils = api.useUtils();
 
   useMemo(() => {
     if (initialJobId && jobs.length > 0 && !selectedJob) {
@@ -324,6 +311,50 @@ export default function ApplicantsView({
   // Use original API data for exports to include full fields
   const downloadRows = applicants.filter((a) => a.jobId === selectedJob.id);
 
+  const downloadAllResumes = async () => {
+    if (!selectedJob) return;
+
+    setDownloadingAll(true);
+
+    try {
+      const resumeData =
+        await trpcUtils.client.downloads.getAllResumesForJob.query({
+          jobId: selectedJob.id,
+        });
+
+      if (resumeData.length === 0) {
+        alert("No resumes found for this job");
+        setDownloadingAll(false);
+        return;
+      }
+
+      const zip = new JSZip();
+      const folder = zip.folder("resumes");
+
+      for (const resume of resumeData) {
+        try {
+          const response = await fetch(resume.url);
+          const blob = await response.blob();
+          folder?.file(resume.filename, blob);
+        } catch (error) {
+          // Continue downloading other files
+        }
+      }
+
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${selectedJob.title.replace(/\s+/g, "_")}_resumes.zip`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert("Failed to download resumes. Please try again.");
+    } finally {
+      setDownloadingAll(false);
+    }
+  };
+
   const exportToCSV = (rows: Applicant[]) => {
     const headers = [
       "id",
@@ -454,6 +485,19 @@ export default function ApplicantsView({
               </CardDescription>
             </div>
             <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                onClick={downloadAllResumes}
+                disabled={downloadingAll}
+                className="inline-flex items-center gap-2"
+              >
+                {downloadingAll ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileDown className="h-4 w-4" />
+                )}
+                {downloadingAll ? "Downloading..." : "Download All Resumes"}
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">Export</Button>
