@@ -181,7 +181,7 @@ export default function Contact() {
                   href="https://www.google.com/maps/place/DHARVISTA+HR+%26+Placement+Solutions/@9.4981691,78.1244937,17z/data=!3m1!4b1!4m6!3m5!1s0x3b013b006f2e2729:0x45cabefdceceb308!8m2!3d9.4981691!4d78.1266824!16s%2Fg%2F11c4840j4m?entry=ttu&g_ep=EgoyMDI1MDEyNi4wIKXMDSoASAFQAw%3D%3D"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="card-corporate animate-slide-up group flex cursor-pointer items-start gap-4 border border-gray-100 opacity-0 transition-colors hover:bg-amber-50"
+                  className="card-corporate animate-slide-up group flex cursor-pointer items-start gap-4 border border-gray-100  transition-colors hover:bg-amber-50"
                   style={{ animationDelay: "275ms" }}
                 >
                   <div className="bg-primary/10 group-hover:bg-primary/20 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg transition-colors">
@@ -204,7 +204,7 @@ export default function Contact() {
 
                 {/* Phone Card */}
                 <div
-                  className="card-corporate animate-slide-up flex items-start gap-4 border border-gray-100 opacity-0 transition-colors hover:bg-amber-50"
+                  className="card-corporate animate-slide-up flex items-start gap-4 border border-gray-100  transition-colors hover:bg-amber-50"
                   style={{ animationDelay: "350ms" }}
                 >
                   <div className="bg-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg">
@@ -221,7 +221,7 @@ export default function Contact() {
 
                 {/* Email Card */}
                 <div
-                  className="card-corporate animate-slide-up flex items-start gap-4 border border-gray-100 opacity-0 transition-colors hover:bg-amber-50"
+                  className="card-corporate animate-slide-up flex items-start gap-4 border border-gray-100  transition-colors hover:bg-amber-50"
                   style={{ animationDelay: "425ms" }}
                 >
                   <div className="bg-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg">
@@ -249,7 +249,7 @@ export default function Contact() {
 
               {/* Social Media Links */}
               <div
-                className="animate-fade-in mt-8 opacity-0"
+                className="animate-fade-in mt-8 "
                 style={{ animationDelay: "500ms" }}
               >
                 <h3 className="mb-4 font-semibold">Connect With Us</h3>
@@ -286,7 +286,7 @@ export default function Contact() {
 
               {/* Office Hours */}
               <div
-                className="animate-fade-in mt-8 rounded-lg border border-amber-100 bg-amber-50 p-6 opacity-0"
+                className="animate-fade-in mt-8 rounded-lg border border-amber-100 bg-amber-50 p-6 "
                 style={{ animationDelay: "600ms" }}
               >
                 <h3 className="mb-2 font-semibold text-gray-900">
@@ -301,7 +301,7 @@ export default function Contact() {
 
               {/* Google Map */}
               <div
-                className="animate-fade-in mt-8 h-75 overflow-hidden rounded-xl border border-amber-100 opacity-0 shadow-sm"
+                className="animate-fade-in mt-8 h-75 overflow-hidden rounded-xl border border-amber-100  shadow-sm"
                 style={{ animationDelay: "650ms" }}
               >
                 <iframe
