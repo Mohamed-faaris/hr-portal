@@ -79,7 +79,14 @@ export default function AdminSidebar() {
               className="h-full w-full object-cover mix-blend-multiply"
             />
           </div>
-          <span className="text-primary text-xl font-black tracking-[1.5px] uppercase">
+          <span
+            className="text-primary text-xl uppercase"
+            style={{
+              fontFamily: '"Product Sans", sans-serif',
+              fontWeight: 700,
+              letterSpacing: "1.5px",
+            }}
+          >
             DHARVISTA
           </span>
         </div>
@@ -123,8 +130,15 @@ export default function AdminSidebar() {
             />
           </div>
           <div>
-            <h2 className="text-primary text-2xl leading-none font-black tracking-[1.5px] uppercase">
-              DHARVISTA
+            <h2
+              className="text-primary text-2xl leading-none"
+              style={{
+                fontFamily: '"Product Sans", sans-serif',
+                fontWeight: 700,
+                letterSpacing: "1.5px",
+              }}
+            >
+              Dharvista
             </h2>
             <p className="mt-1 text-[10px] font-semibold tracking-wider text-gray-400 uppercase">
               Admin Portal
