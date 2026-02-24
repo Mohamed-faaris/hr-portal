@@ -1,7 +1,12 @@
-export type JobStatus = 'draft' | 'published' | 'closed';
-export type JobPriority = 'normal' | 'featured' | 'urgent';
-export type JobType = 'full-time' | 'part-time' | 'contract' | 'internship' | 'freelance';
-export type ApplicantStatus = 'new' | 'contacted' | 'hired' | 'rejected';
+export type JobStatus = "draft" | "published" | "closed";
+export type JobPriority = "normal" | "featured" | "urgent";
+export type JobType =
+  | "full-time"
+  | "part-time"
+  | "contract"
+  | "internship"
+  | "freelance";
+export type ApplicantStatus = "new" | "contacted" | "hired" | "rejected";
 
 export interface Job {
   id: string;
@@ -27,22 +32,40 @@ export interface Job {
   updatedAt: string;
 
   googleFormUrl?: string;
-  config?: Record<string, 'required' | 'shown' | 'hidden'>;
+  config?: Record<string, "required" | "shown" | "hidden">;
 }
 
 export interface Applicant {
   id: string;
   jobId: string;
-  jobTitle: string;
 
-  name: string;
-  email: string;
-  phone: string;
+  fullName: string | null;
+  email: string | null;
+  phone: string | null;
 
-  resumeLink: string;
+  gender: string | null;
+  currentLocation: string | null;
+  preferredWorkLocation: string | null;
+  totalExperience: string | null;
+  currentCompany: string | null;
+  currentDesignation: string | null;
+  currentSalary: string | null;
+  expectedSalary: string | null;
+  noticePeriod: string | null;
+  highestQualification: string | null;
+  specialization: string | null;
+  university: string | null;
+  keySkills: string | null;
+  preferredJobType: string | null;
+  dateOfBirth: string | null;
+  linkedinProfile: string | null;
+  portfolio: string | null;
 
-  appliedAt: string;
+  resumeUrl: string | null;
+
+  appliedAt: Date;
+  updatedAt: Date;
   status: ApplicantStatus;
 
-  notes?: string;
+  notes: string | null;
 }

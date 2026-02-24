@@ -195,10 +195,10 @@ export default function ApplicantsView({
 
   const columns: ColumnDef<ApplicantWithOptimistic>[] = [
     {
-      accessorKey: "name",
+      accessorKey: "fullName",
       header: "Name",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("name")}</div>
+        <div className="font-medium">{row.getValue("fullName")}</div>
       ),
     },
     {
