@@ -1,12 +1,12 @@
 import { env } from "~/env.js";
 
 export interface RecaptchaResponse {
-    success: boolean;
-    challenge_ts: string;
-    hostname: string;
-    "error-codes"?: string[];
-    score?: number;
-    action?: string;
+  success: boolean;
+  challenge_ts: string;
+  hostname: string;
+  "error-codes"?: string[];
+  score?: number;
+  action?: string;
 }
 
 /**
@@ -16,31 +16,36 @@ export interface RecaptchaResponse {
  * @returns RecaptchaResponse from Google's API
  */
 export async function verifyRecaptcha(
-    token: string,
-    remoteIp?: string
+  token: string,
+  remoteIp?: string,
 ): Promise<RecaptchaResponse> {
-    try {
-        const params = new URLSearchParams({
-            secret: env.RECAPTCHA_SECRET_KEY,
-            response: token,
-            ...(remoteIp && { remoteip: remoteIp }),
-        });
+  try {
+    const params = new URLSearchParams({
+      secret: env.RECAPTCHA_SECRET_KEY,
+      response: token,
+      ...(remoteIp && { remoteip: remoteIp }),
+    });
 
-        const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-            method: "POST",
-            body: params,
-        });
+    const response = await fetch(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {
+        method: "POST",
+        body: params,
+      },
+    );
 
-        if (!response.ok) {
-            throw new Error(`reCAPTCHA verification failed with status ${response.status}`);
-        }
-
-        const data: RecaptchaResponse = await response.json();
-        return data;
-    } catch (error) {
-        console.error("reCAPTCHA verification error:", error);
-        throw new Error("Failed to verify reCAPTCHA token");
+    if (!response.ok) {
+      throw new Error(
+        `reCAPTCHA verification failed with status ${response.status}`,
+      );
     }
+
+    const data: RecaptchaResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("reCAPTCHA verification error:", error);
+    throw new Error("Failed to verify reCAPTCHA token");
+  }
 }
 
 /**
@@ -51,22 +56,26 @@ export async function verifyRecaptcha(
  * @returns true if verification succeeds and score meets threshold
  */
 export async function validateRecaptcha(
-    token: string,
-    minScore: number = 0.5,
-    remoteIp?: string
+  token: string,
+  minScore: number = 0.5,
+  remoteIp?: string,
 ): Promise<boolean> {
-    const result = await verifyRecaptcha(token, remoteIp);
-
-    if (!result.success) {
-        console.warn("reCAPTCHA verification failed:", result["error-codes"]);
-        return false;
-    }
-
-    // For reCAPTCHA v3, check score
-    if (result.score !== undefined && result.score < minScore) {
-        console.warn(`reCAPTCHA score ${result.score} below threshold ${minScore}`);
-        return false;
-    }
-
+  if (env.SKIP_CAPTCHA) {
     return true;
+  }
+
+  const result = await verifyRecaptcha(token, remoteIp);
+
+  if (!result.success) {
+    console.warn("reCAPTCHA verification failed:", result["error-codes"]);
+    return false;
+  }
+
+  // For reCAPTCHA v3, check score
+  if (result.score !== undefined && result.score < minScore) {
+    console.warn(`reCAPTCHA score ${result.score} below threshold ${minScore}`);
+    return false;
+  }
+
+  return true;
 }

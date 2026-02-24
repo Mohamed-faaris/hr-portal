@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { env } from "~/env";
+import type { Job } from "~/types";
 import ReCAPTCHA from "react-google-recaptcha";
 import {
   Dialog,
@@ -60,8 +61,7 @@ export function JobApplicationModal({
 
   // Only enable reCAPTCHA in environments other than development/production
   // (per request: remove/disable reCAPTCHA when runtime env is dev or prod)
-  const isRecaptchaEnabled = true;
-
+  const isRecaptchaEnabled = !env.NEXT_PUBLIC_SKIP_CAPTCHA;
 
   useEffect(() => {
     if (!isRecaptchaEnabled) {
@@ -223,7 +223,7 @@ export function JobApplicationModal({
 
       await createApplication.mutateAsync({
         jobId: job.id,
-        captchaToken: captchaToken,
+        captchaToken: captchaToken ?? undefined,
         ...(resumeUrl ? { resumeUrl } : {}),
         ...formData,
       });

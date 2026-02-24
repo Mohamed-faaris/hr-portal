@@ -34,7 +34,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_SKIP_CAPTCHA: z.boolean(),
   },
 
   /**
@@ -53,6 +53,10 @@ export const env = createEnv({
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     SKIP_CAPTCHA:
+      process.env.SKIP_CAPTCHA === "true" ||
+      (process.env.SKIP_CAPTCHA === undefined &&
+        process.env.NODE_ENV === "development"),
+    NEXT_PUBLIC_SKIP_CAPTCHA:
       process.env.SKIP_CAPTCHA === "true" ||
       (process.env.SKIP_CAPTCHA === undefined &&
         process.env.NODE_ENV === "development"),
