@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* --- GOOGLE PRODUCT SANS FONT IMPORT --- */
+@font-face {
+  font-family: 'Product Sans';
+  src: url('/fonts/ProductSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* --------------------------------------- */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

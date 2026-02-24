@@ -40,14 +40,14 @@ export default function Navigation() {
               />
             </div>
             <span
-              className="text-primary text-2xl uppercase md:text-3xl"
+              className="text-primary text-2xl md:text-3xl"
               style={{
-                fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-                fontWeight: 900,
+                fontFamily: '"Product Sans", sans-serif',
+                fontWeight: 700,
                 letterSpacing: "1.5px",
               }}
             >
-              DHARVISTA
+              Dharvista
             </span>
           </Link>
 

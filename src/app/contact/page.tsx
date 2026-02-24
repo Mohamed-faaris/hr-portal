@@ -293,9 +293,9 @@ export default function Contact() {
                   Office Hours
                 </h3>
                 <p className="text-muted-foreground">
-                  Monday - Friday: 9:00 AM - 6:00 PM
+                  Monday - Saturday: 9:00 AM - 6:00 PM
                   <br />
-                  Saturday - Sunday: Closed
+                  Sunday: Closed
                 </p>
               </div>
 
