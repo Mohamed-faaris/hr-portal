@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import type { Job } from "~/types";
-import ReCAPTCHA from "react-google-recaptcha";
 import {
   Dialog,
   DialogContent,
@@ -50,24 +49,11 @@ export function JobApplicationModal({
   onOpenChange,
 }: JobApplicationModalProps) {
   const { toast } = useToast();
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const createApplication = api.applications.create.useMutation();
   const getPresignedUrl = api.upload.getPresignedUrl.useMutation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resume, setResume] = useState<File | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-
-  // Only enable reCAPTCHA in environments other than development/production
-  // (per request: remove/disable reCAPTCHA when runtime env is dev or prod)
-  const isRecaptchaEnabled = true;
-
-  useEffect(() => {
-    if (!isRecaptchaEnabled) {
-      // set a bypass token so submission can proceed when captcha is disabled
-      setCaptchaToken("development-mode-bypass");
-    }
-  }, [isRecaptchaEnabled]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -152,10 +138,6 @@ export function JobApplicationModal({
     }
   };
 
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -179,15 +161,6 @@ export function JobApplicationModal({
         return;
       }
       // Unknown error: continue to normal error handling below
-    }
-
-    if (!captchaToken && isRecaptchaEnabled) {
-      toast({
-        title: "Verification Required",
-        description: "Please complete the reCAPTCHA.",
-        variant: "destructive",
-      });
-      return;
     }
 
     setIsSubmitting(true);
@@ -222,7 +195,6 @@ export function JobApplicationModal({
 
       await createApplication.mutateAsync({
         jobId: job.id,
-        captchaToken: captchaToken ?? undefined,
         ...(resumeUrl ? { resumeUrl } : {}),
         ...formData,
       });
@@ -256,8 +228,6 @@ export function JobApplicationModal({
         portfolio: "",
       });
       setResume(null);
-      setCaptchaToken(null);
-      recaptchaRef.current?.reset();
       onOpenChange(false);
     } catch (error) {
       console.error("Submission Error:", error);
@@ -778,26 +748,6 @@ export function JobApplicationModal({
                         </>
                       )}
                     </div>
-                  </div>
-
-                  {/* Captcha */}
-                  <div className="flex origin-center scale-90 justify-center pt-2 md:scale-100 md:pt-4">
-                    {isRecaptchaEnabled ? (
-                      <ReCAPTCHA
-                        ref={recaptchaRef}
-                        sitekey="6LeKLDssAAAAAL2_UAe8KJWwRfJ9dHpN0KziP897"
-                        onChange={handleCaptchaChange}
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-center">
-                        <span className="text-xs font-bold tracking-wider text-amber-600 uppercase">
-                          reCAPTCHA Disabled
-                        </span>
-                        <p className="text-[11px] text-amber-700">
-                          Verification bypassed for current environment.
-                        </p>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}

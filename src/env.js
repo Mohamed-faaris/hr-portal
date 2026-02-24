@@ -20,8 +20,6 @@ export const env = createEnv({
     S3_BUCKET_NAME: z.string(),
     S3_REGION: z.string(),
     S3_ENDPOINT: z.string().url(),
-    RECAPTCHA_SECRET_KEY: z.string(),
-    RECAPTCHA_SITE_KEY: z.string(),
   },
 
   /**
@@ -44,8 +42,6 @@ export const env = createEnv({
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
     S3_REGION: process.env.S3_REGION,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
-    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
-    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
