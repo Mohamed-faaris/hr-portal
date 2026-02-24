@@ -1,22 +1,18 @@
 import { jobsRouter } from "~/server/api/routers/jobs";
 import { applicationsRouter } from "~/server/api/routers/applications";
 import { jobConfigsRouter } from "~/server/api/routers/jobConfigs";
-import { todosRouter } from "~/server/api/routers/todos";
 import { uploadRouter } from "~/server/api/routers/upload";
 import { downloadsRouter } from "~/server/api/routers/downloads";
+import { enquiriesRouter } from "~/server/api/routers/enquiries";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
-/**
- * This is the primary router for your server.
- *
- * All routers added in /api/routers should be manually added here.
- */
 export const appRouter = createTRPCRouter({
   jobs: jobsRouter,
   applications: applicationsRouter,
   jobConfigs: jobConfigsRouter,
   upload: uploadRouter,
   downloads: downloadsRouter,
+  enquiries: enquiriesRouter,
 });
 
 // export type definition of API
