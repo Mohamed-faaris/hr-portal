@@ -4,6 +4,7 @@ import {
   Head,
   Hr,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -18,6 +19,11 @@ interface EnquiryEmailProps {
   message: string;
 }
 
+const BRAND_NAME = "Dharvista HR Portal";
+const BRAND_TAGLINE = "Connecting Talent with Opportunity";
+const BRAND_COLOR = "#5469d4";
+const LOGO_URL = "https://hr-portal-steel.vercel.app/favicon.jpg";
+
 export const EnquiryEmail = ({
   name,
   email,
@@ -30,6 +36,17 @@ export const EnquiryEmail = ({
     <Preview>New Enquiry: {subject}</Preview>
     <Body style={main}>
       <Container style={container}>
+        <Section style={headerSection}>
+          <Img
+            src={LOGO_URL}
+            alt={BRAND_NAME}
+            width="48"
+            height="48"
+            style={logo}
+          />
+          <Text style={brandName}>{BRAND_NAME}</Text>
+          <Text style={brandTagline}>{BRAND_TAGLINE}</Text>
+        </Section>
         <Section style={box}>
           <Text style={heading}>New Enquiry Received</Text>
           <Hr style={hr} />
@@ -51,8 +68,12 @@ export const EnquiryEmail = ({
           <Text style={messageStyle}>{message}</Text>
           <Hr style={hr} />
           <Text style={footer}>
-            This enquiry was submitted via the HR Portal contact form.
+            This enquiry was submitted via the {BRAND_NAME} contact form.
           </Text>
+        </Section>
+        <Section style={footerSection}>
+          <Text style={footerBrand}>{BRAND_NAME}</Text>
+          <Text style={footerText}>{BRAND_TAGLINE}</Text>
         </Section>
       </Container>
     </Body>
@@ -70,12 +91,38 @@ const main = {
 const container = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
+  padding: "0",
   marginBottom: "64px",
+  borderRadius: "8px",
+  overflow: "hidden",
+};
+
+const headerSection = {
+  backgroundColor: BRAND_COLOR,
+  padding: "32px 48px",
+  textAlign: "center" as const,
+};
+
+const logo = {
+  margin: "0 auto 16px auto",
+  borderRadius: "8px",
+};
+
+const brandName = {
+  color: "#ffffff",
+  fontSize: "28px",
+  fontWeight: "bold",
+  margin: "0 0 8px 0",
+};
+
+const brandTagline = {
+  color: "#e0e7ff",
+  fontSize: "14px",
+  margin: "0",
 };
 
 const box = {
-  padding: "0 48px",
+  padding: "32px 48px",
 };
 
 const hr = {
@@ -87,7 +134,7 @@ const heading = {
   color: "#1f2937",
   fontSize: "24px",
   fontWeight: "bold",
-  margin: "16px 0",
+  margin: "0 0 16px 0",
   padding: "0",
 };
 
@@ -128,4 +175,24 @@ const footer = {
   color: "#999999",
   fontSize: "12px",
   lineHeight: "15px",
+};
+
+const footerSection = {
+  backgroundColor: "#f9fafb",
+  padding: "24px 48px",
+  textAlign: "center" as const,
+  borderTop: "1px solid #e5e7eb",
+};
+
+const footerBrand = {
+  color: "#1f2937",
+  fontSize: "16px",
+  fontWeight: "bold",
+  margin: "0 0 4px 0",
+};
+
+const footerText = {
+  color: "#6b7280",
+  fontSize: "12px",
+  margin: "0",
 };
