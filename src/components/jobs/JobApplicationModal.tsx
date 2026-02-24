@@ -22,6 +22,7 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/hooks/use-toast";
 import { z } from "zod";
 import { buildFormSchema } from "~/lib/formValidation";
+import { cn } from "~/lib/utils";
 import {
   UploadCloud,
   FileText,
@@ -54,6 +55,7 @@ export function JobApplicationModal({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resume, setResume] = useState<File | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Form State
   const [formData, setFormData] = useState({
@@ -104,10 +106,24 @@ export function JobApplicationModal({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,34 +151,46 @@ export function JobApplicationModal({
         return;
       }
       setResume(file);
+      if (fieldErrors["resumeUrl"]) {
+        setFieldErrors((prev) => {
+          const next = { ...prev };
+          delete next["resumeUrl"];
+          return next;
+        });
+      }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate form using Zod built from job config; include resume presence via `resumeUrl`
     const schema = buildFormSchema(config as Record<string, string>);
     const validationInput = {
       ...formData,
       resumeUrl: resume ? resume.name : "",
     };
-    try {
-      schema.parse(validationInput as any);
-    } catch (err) {
-      // Show first Zod error in toast
-      if (err instanceof z.ZodError) {
-        const first = err.errors[0];
-        toast({
-          title: "Validation Error",
-          description: first?.message ?? "Please check the form fields.",
-          variant: "destructive",
-        });
-        return;
-      }
-      // Unknown error: continue to normal error handling below
+    
+    const result = schema.safeParse(validationInput as any);
+    
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as string;
+        if (!errors[field]) {
+          errors[field] = err.message;
+        }
+      });
+      setFieldErrors(errors);
+      
+      toast({
+        title: "Validation Error",
+        description: "Please fix the errors in the form.",
+        variant: "destructive",
+      });
+      return;
     }
 
+    setFieldErrors({});
     setIsSubmitting(true);
 
     try {
@@ -204,7 +232,6 @@ export function JobApplicationModal({
         description: "We have received your application. Good luck!",
       });
 
-      // Reset Form
       setFormData({
         fullName: "",
         email: "",
@@ -228,6 +255,7 @@ export function JobApplicationModal({
         portfolio: "",
       });
       setResume(null);
+      setFieldErrors({});
       onOpenChange(false);
     } catch (error) {
       console.error("Submission Error:", error);
@@ -303,8 +331,14 @@ export function JobApplicationModal({
                           value={formData.fullName}
                           onChange={handleInputChange}
                           placeholder="John Doe"
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.fullName && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.fullName && (
+                          <p className="text-xs text-red-500">{fieldErrors.fullName}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("email") && (
@@ -322,8 +356,14 @@ export function JobApplicationModal({
                           value={formData.email}
                           onChange={handleInputChange}
                           placeholder="john@example.com"
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.email && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.email && (
+                          <p className="text-xs text-red-500">{fieldErrors.email}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("phone") && (
@@ -340,8 +380,14 @@ export function JobApplicationModal({
                           value={formData.phone}
                           onChange={handleInputChange}
                           placeholder="+91..."
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.phone && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.phone && (
+                          <p className="text-xs text-red-500">{fieldErrors.phone}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("gender") && (
@@ -359,7 +405,10 @@ export function JobApplicationModal({
                           }
                           required={isFieldRequired("gender")}
                         >
-                          <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
+                          <SelectTrigger className={cn(
+                            "border-stone-200 bg-stone-50 focus:ring-amber-500/20",
+                            fieldErrors.gender && "border-red-500"
+                          )}>
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
@@ -368,6 +417,9 @@ export function JobApplicationModal({
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
+                        {fieldErrors.gender && (
+                          <p className="text-xs text-red-500">{fieldErrors.gender}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("dateOfBirth") && (
@@ -384,8 +436,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("dateOfBirth")}
                           value={formData.dateOfBirth}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.dateOfBirth && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.dateOfBirth && (
+                          <p className="text-xs text-red-500">{fieldErrors.dateOfBirth}</p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -417,8 +475,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("currentLocation")}
                           value={formData.currentLocation}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.currentLocation && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.currentLocation && (
+                          <p className="text-xs text-red-500">{fieldErrors.currentLocation}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("preferredWorkLocation") && (
@@ -434,8 +498,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("preferredWorkLocation")}
                           value={formData.preferredWorkLocation}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.preferredWorkLocation && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.preferredWorkLocation && (
+                          <p className="text-xs text-red-500">{fieldErrors.preferredWorkLocation}</p>
+                        )}
                       </div>
                     )}
 
@@ -518,7 +588,10 @@ export function JobApplicationModal({
                           }
                           required={isFieldRequired("totalExperience")}
                         >
-                          <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
+                          <SelectTrigger className={cn(
+                            "border-stone-200 bg-stone-50 focus:ring-amber-500/20",
+                            fieldErrors.totalExperience && "border-red-500"
+                          )}>
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
@@ -530,6 +603,9 @@ export function JobApplicationModal({
                             <SelectItem value="10+">10+ Years</SelectItem>
                           </SelectContent>
                         </Select>
+                        {fieldErrors.totalExperience && (
+                          <p className="text-xs text-red-500">{fieldErrors.totalExperience}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("highestQualification") && (
@@ -547,7 +623,10 @@ export function JobApplicationModal({
                           }
                           required={isFieldRequired("highestQualification")}
                         >
-                          <SelectTrigger className="border-stone-200 bg-stone-50 focus:ring-amber-500/20">
+                          <SelectTrigger className={cn(
+                            "border-stone-200 bg-stone-50 focus:ring-amber-500/20",
+                            fieldErrors.highestQualification && "border-red-500"
+                          )}>
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
                           <SelectContent>
@@ -561,6 +640,9 @@ export function JobApplicationModal({
                             <SelectItem value="diploma">Diploma</SelectItem>
                           </SelectContent>
                         </Select>
+                        {fieldErrors.highestQualification && (
+                          <p className="text-xs text-red-500">{fieldErrors.highestQualification}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("currentCompany") && (
@@ -576,8 +658,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("currentCompany")}
                           value={formData.currentCompany}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.currentCompany && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.currentCompany && (
+                          <p className="text-xs text-red-500">{fieldErrors.currentCompany}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("currentDesignation") && (
@@ -593,8 +681,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("currentDesignation")}
                           value={formData.currentDesignation}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.currentDesignation && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.currentDesignation && (
+                          <p className="text-xs text-red-500">{fieldErrors.currentDesignation}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("currentSalary") && (
@@ -610,8 +704,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("currentSalary")}
                           value={formData.currentSalary}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.currentSalary && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.currentSalary && (
+                          <p className="text-xs text-red-500">{fieldErrors.currentSalary}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("expectedSalary") && (
@@ -627,8 +727,14 @@ export function JobApplicationModal({
                           required={isFieldRequired("expectedSalary")}
                           value={formData.expectedSalary}
                           onChange={handleInputChange}
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.expectedSalary && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.expectedSalary && (
+                          <p className="text-xs text-red-500">{fieldErrors.expectedSalary}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("keySkills") && (
@@ -645,8 +751,14 @@ export function JobApplicationModal({
                           value={formData.keySkills}
                           onChange={handleInputChange}
                           placeholder="React, Java, Python..."
-                          className="min-h-[60px] resize-none border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "min-h-[60px] resize-none border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.keySkills && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.keySkills && (
+                          <p className="text-xs text-red-500">{fieldErrors.keySkills}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("linkedinProfile") && (
@@ -663,8 +775,14 @@ export function JobApplicationModal({
                           value={formData.linkedinProfile}
                           onChange={handleInputChange}
                           placeholder="https://linkedin.com/in/..."
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.linkedinProfile && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.linkedinProfile && (
+                          <p className="text-xs text-red-500">{fieldErrors.linkedinProfile}</p>
+                        )}
                       </div>
                     )}
                     {isFieldVisible("portfolio") && (
@@ -681,8 +799,14 @@ export function JobApplicationModal({
                           value={formData.portfolio}
                           onChange={handleInputChange}
                           placeholder="https://yourportfolio.com"
-                          className="border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20"
+                          className={cn(
+                            "border-stone-200 bg-stone-50 focus:border-amber-500 focus:ring-amber-500/20",
+                            fieldErrors.portfolio && "border-red-500 focus:border-red-500"
+                          )}
                         />
+                        {fieldErrors.portfolio && (
+                          <p className="text-xs text-red-500">{fieldErrors.portfolio}</p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -704,7 +828,10 @@ export function JobApplicationModal({
                         <span className="text-red-500">*</span>
                       )}
                     </Label>
-                    <div className="group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-amber-200 bg-amber-50/30 p-4 text-center transition-colors hover:bg-amber-50 md:p-8">
+                    <div className={cn(
+                      "group relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-amber-50/30 p-4 text-center transition-colors hover:bg-amber-50 md:p-8",
+                      fieldErrors.resumeUrl ? "border-red-300" : "border-amber-200"
+                    )}>
                       <Input
                         type="file"
                         accept=".pdf,.doc,.docx"
@@ -748,6 +875,9 @@ export function JobApplicationModal({
                         </>
                       )}
                     </div>
+                    {fieldErrors.resumeUrl && (
+                      <p className="text-xs text-red-500">{fieldErrors.resumeUrl}</p>
+                    )}
                   </div>
                 </div>
               )}
