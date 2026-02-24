@@ -34,6 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import { Combobox } from "~/components/ui/combobox";
 import { toast } from "sonner";
 import { INDUSTRIES, FIELD_NAMES } from "./constants";
 
@@ -175,21 +176,13 @@ export default function JobsView({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="space-y-1 md:col-span-1">
               <label className="text-sm font-medium">Industry</label>
-              <Select
+              <Combobox
+                options={INDUSTRIES}
                 value={newJob.industry}
-                onValueChange={(val) => setNewJob({ ...newJob, industry: val })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Industry" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {INDUSTRIES.map((ind) => (
-                    <SelectItem key={ind} value={ind}>
-                      {ind}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(val) => setNewJob({ ...newJob, industry: val })}
+                placeholder="Select Industry"
+                searchPlaceholder="Search or type custom industry..."
+              />
             </div>
 
             <div className="space-y-1">
