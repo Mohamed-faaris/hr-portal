@@ -33,9 +33,7 @@ export const env = createEnv({
    * isn't built with invalid env vars. To expose them to the client, prefix them with
    * `NEXT_PUBLIC_`.
    */
-  client: {
-    NEXT_PUBLIC_SKIP_CAPTCHA: z.boolean(),
-  },
+  client: {},
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -53,10 +51,6 @@ export const env = createEnv({
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     SKIP_CAPTCHA:
-      process.env.SKIP_CAPTCHA === "true" ||
-      (process.env.SKIP_CAPTCHA === undefined &&
-        process.env.NODE_ENV === "development"),
-    NEXT_PUBLIC_SKIP_CAPTCHA:
       process.env.SKIP_CAPTCHA === "true" ||
       (process.env.SKIP_CAPTCHA === undefined &&
         process.env.NODE_ENV === "development"),
