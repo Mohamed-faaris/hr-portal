@@ -22,6 +22,7 @@ import { fadeInUp, staggerContainer } from "~/lib/animations";
 const industries = [
   { name: "Medical / Healthcare", icon: Stethoscope },
   { name: "Hotels / Restaurants", icon: Utensils },
+  { name: "Manufacturing Units", icon: Factory },
   { name: "Retail / FMCG", icon: ShoppingBag },
   { name: "Automobile", icon: Car },
   { name: "Construction", icon: HardHat },
@@ -34,6 +35,8 @@ const industries = [
   { name: "Textiles & Garments", icon: Shirt },
   { name: "MSME", icon: Store },
   { name: "Start-Ups", icon: Rocket },
+  { name: "Factories & Industries", icon: Factory },
+  
 ];
 
 export default function IndustriesSection() {

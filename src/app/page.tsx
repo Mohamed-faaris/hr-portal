@@ -32,7 +32,7 @@ export default function HomePage() {
           variants={staggerContainer()}
         >
           <motion.div variants={fadeInUp} transition={{ delay: 0.1 }}>
-            <h1 className="mx-auto mb-6 max-w-5xl text-4xl leading-tight font-bold tracking-tight drop-shadow-lg md:text-6xl lg:text-7xl">
+            <h1 className="bg-gradient-to-b from-[#FFE566] to-[#FFCC00] bg-clip-text text-transparent mx-auto mb-6 max-w-5xl text-4xl leading-tight font-bold tracking-tight drop-shadow-sm md:text-6xl lg:text-7xl pb-2">
               Building Bridges to Professional Dreams
             </h1>
           </motion.div>
