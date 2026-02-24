@@ -60,9 +60,7 @@ export function JobApplicationModal({
 
   // Only enable reCAPTCHA in environments other than development/production
   // (per request: remove/disable reCAPTCHA when runtime env is dev or prod)
-  const isRecaptchaEnabled =
-    process.env.NEXT_PUBLIC_SKIP_CAPTCHA !== "true" &&
-    process.env.NODE_ENV !== "development";
+  const isRecaptchaEnabled = true;
 
   useEffect(() => {
     if (!isRecaptchaEnabled) {

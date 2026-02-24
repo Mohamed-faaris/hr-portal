@@ -60,10 +60,6 @@ export async function validateRecaptcha(
   minScore: number = 0.5,
   remoteIp?: string,
 ): Promise<boolean> {
-  if (env.SKIP_CAPTCHA) {
-    return true;
-  }
-
   const result = await verifyRecaptcha(token, remoteIp);
 
   if (!result.success) {
