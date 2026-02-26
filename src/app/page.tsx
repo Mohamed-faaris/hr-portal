@@ -6,6 +6,7 @@ import { ArrowRight, Users, Target, Award, Briefcase } from "lucide-react";
 import IndustriesSection from "~/components/sections/IndustriesSection";
 import LatestJobsSection from "~/components/sections/LatestJobsSection";
 import ClienteleSection from "~/components/sections/ClienteleSection";
+import TrainingSection from "~/components/sections/TrainingSection";
 import Layout from "~/components/Layout";
 import { motion } from "framer-motion";
 import { fadeInUp, fadeIn, staggerContainer } from "~/lib/animations";
@@ -203,6 +204,9 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      <TrainingSection />
+
 
       <IndustriesSection />
 

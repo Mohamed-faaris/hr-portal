@@ -273,7 +273,7 @@ export default function Contact() {
                     Instagram
                   </a>
                   <a
-                    href="https://whatsapp.com/channel/0029Vb6zCH20LKZKj1w4sB2j"
+                    href="https://wa.me/916381451289"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 rounded-md border border-amber-100 bg-amber-50 px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-amber-100"

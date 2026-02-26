@@ -75,7 +75,7 @@ export default function Footer() {
 
             <div className="flex gap-4">
               <SocialLink
-                href="https://instagram.com"
+                href="https://www.instagram.com/dharvistahr?igsh=eTQ2bXcyNGp5Zmp4&utm_source=ig_contact_invite"
                 icon={Instagram}
                 label="Instagram"
               />
@@ -85,7 +85,7 @@ export default function Footer() {
                 label="WhatsApp"
               />
               <SocialLink
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/109600486/"
                 icon={Linkedin}
                 label="LinkedIn"
               />

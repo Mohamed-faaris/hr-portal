@@ -12,6 +12,10 @@ import {
   Wrench,
   CheckCircle2,
   ArrowRight,
+  GraduationCap,
+  Laptop,
+  UserCheck,
+  TrendingUp,
 } from "lucide-react";
 import ClienteleSection from "~/components/sections/ClienteleSection";
 import { motion } from "framer-motion";
@@ -77,6 +81,57 @@ const services = [
       "Retention-Focused Placements",
     ],
     icon: Wrench,
+  },
+];
+
+const trainingPrograms = [
+  {
+    title: "Campus to Corporate",
+    description:
+      "A comprehensive transition program designed to transform fresh graduates into confident, industry-ready professionals equipped to handle workplace dynamics.",
+    icon: GraduationCap,
+    features: [
+      "Business Communication & Email Etiquette",
+      "Corporate Grooming & Presentation",
+      "Time Management & Productivity",
+      "Team Collaboration & Conflict Resolution",
+    ],
+  },
+  {
+    title: "Technical Skill Enhancement",
+    description:
+      "Intensive, domain-specific training tailored to bridge the gap between academic knowledge and current industry requirements.",
+    icon: Laptop,
+    features: [
+      "IT & Software Development (React, Node, Python)",
+      "Manufacturing & Core Engineering Standards",
+      "Textile Industry ERP & Operations",
+      "Hands-on Capstone Projects",
+    ],
+  },
+  {
+    title: "Interview Mastery",
+    description:
+      "Personalized coaching to help candidates articulate their value, pass tough technical rounds, and secure the job offer.",
+    icon: UserCheck,
+    features: [
+      "ATS-Friendly Resume & Portfolio Building",
+      "1-on-1 Mock Interviews with Experts",
+      "Aptitude & Logical Reasoning Prep",
+      "Body Language & Confidence Coaching",
+    ],
+  },
+  {
+    title: "Leadership & Management",
+    description:
+      "Advanced upskilling for experienced professionals looking to transition into managerial and leadership roles.",
+    icon: TrendingUp,
+    features: [
+      "Strategic Decision Making",
+      "People Management & Empathy",
+      "Agile Project Management",
+      "KPI Tracking & Performance Reviews",
+    ],
   },
 ];
 
@@ -154,7 +209,7 @@ export default function Services() {
         </motion.div>
       </section>
 
-      {/* 🟢 SERVICES GRID SECTION (Background Changed to Amber-50) */}
+      {/* 🟢 SERVICES GRID SECTION */}
       <section className="section-padding bg-white">
         <div className="container-wide">
           <div className="mb-16 text-center">
@@ -174,10 +229,9 @@ export default function Services() {
               return (
                 <div
                   key={index}
-                  // 🟢 UPDATED: border-gray-100 -> border-amber-100
-                  className="<border-amber-100></border-amber-50> flex w-full flex-col rounded-2xl border bg-white p-10 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1.5rem)]"
+                  className="flex w-full flex-col rounded-2xl border border-amber-100 bg-white p-10 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-xl md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1.5rem)]"
                 >
-                  <div className="bg-primary/10 text-primary mb-8 flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold">
+                  <div className="bg-primary/10 text-primary mb-8 flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold transition-colors hover:bg-primary hover:text-white">
                     <Icon className="h-8 w-8" />
                   </div>
                   <h3 className="mb-4 text-2xl font-bold text-gray-900">
@@ -187,7 +241,6 @@ export default function Services() {
                     {service.description}
                   </p>
 
-                  {/* 🟢 UPDATED: border-t border-amber-100 */}
                   <div className="mt-auto border-t border-amber-100 pt-8">
                     <h4 className="mb-4 text-sm font-semibold tracking-wide text-gray-900 uppercase">
                       Key Features
@@ -211,8 +264,65 @@ export default function Services() {
         </div>
       </section>
 
-      {/* 🟢 RECRUITMENT PROCESS (White BG, Updated Top Border) */}
+      {/* 🟢 DETAILED PLACEMENT & TRAINING SECTION */}
       <section className="section-padding border-t border-amber-100 bg-amber-50">
+        <div className="container-wide">
+          <div className="mb-16 text-center">
+            <h2 className="text-foreground mb-4 text-3xl font-bold md:text-4xl">
+              Placement & Training Excellence
+            </h2>
+            <div className="bg-primary mx-auto mb-6 h-1 w-20" />
+            <p className="text-muted-foreground mx-auto max-w-3xl text-lg">
+              We go beyond traditional recruitment by equipping our candidates with the exact technical and soft skills required by modern employers.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
+            {trainingPrograms.map((program, index) => {
+              const Icon = program.icon;
+              return (
+                <div
+                  key={index}
+                  className="group relative flex flex-col rounded-3xl border border-amber-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl md:p-10"
+                >
+                  <div className="mb-6 flex items-center gap-5">
+                    <div className="bg-primary/10 group-hover:bg-primary flex h-16 w-16 shrink-0 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110">
+                      <Icon className="text-primary group-hover:text-primary-foreground h-8 w-8 transition-colors duration-300" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      {program.title}
+                    </h3>
+                  </div>
+
+                  <p className="mb-8 text-base leading-relaxed text-gray-600">
+                    {program.description}
+                  </p>
+
+                  <div className="mt-auto rounded-2xl bg-amber-50/50 p-6">
+                    <h4 className="mb-4 text-sm font-bold tracking-wide text-amber-900 uppercase">
+                      Curriculum Highlights
+                    </h4>
+                    <ul className="space-y-3">
+                      {program.features.map((feature, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-gray-700"
+                        >
+                          <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                          <span className="leading-relaxed">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 🟢 RECRUITMENT PROCESS */}
+      <section className="section-padding border-t border-amber-100 bg-white">
         <div className="container-wide">
           <div className="mb-16 text-center">
             <h2 className="text-foreground mb-4 text-3xl font-bold md:text-4xl">
@@ -229,8 +339,7 @@ export default function Services() {
             {processSteps.map((item, index) => (
               <div
                 key={index}
-                // 🟢 UPDATED: border-amber-100 for consistency
-                className="group hover:border-primary/30 rounded-2xl border border-amber-100 bg-white p-8 transition-all duration-300 hover:shadow-xl"
+                className="group hover:border-primary/30 rounded-2xl border border-amber-100 bg-amber-50/30 p-8 transition-all duration-300 hover:bg-white hover:shadow-xl"
               >
                 <div className="group-hover:text-primary mb-4 text-5xl font-bold text-blue-950 transition-colors duration-300">
                   {item.step}
@@ -247,8 +356,8 @@ export default function Services() {
         </div>
       </section>
 
-      {/* 🟢 CTA Section (Background Changed to Amber-50) */}
-      <section className="section-padding bg-amber-50">
+      {/* 🟢 CTA Section */}
+      <section className="section-padding border-t border-amber-100 bg-amber-50">
         <div className="container-wide text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -263,7 +372,7 @@ export default function Services() {
               Contact us today to discuss how our tailored services can meet
               your specific workforce requirements.
             </p>
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="h-14 px-8 text-lg font-bold shadow-lg shadow-primary/20 hover:-translate-y-1">
               <Link href="/contact">
                 Get a Quote <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

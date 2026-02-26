@@ -41,7 +41,7 @@ export default function FloatingWhatsApp({ threshold = 300 }: FloatingWhatsAppPr
 
   return (
     <a
-      href="https://whatsapp.com/channel/0029Vb6zCH20LKZKj1w4sB2j"
+      href="https://wa.me/916381451289"
       target="_blank"
       rel="noopener noreferrer"
       className={`fixed bottom-6 right-6 z-50 p-4 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-2xl transition-all duration-500 transform hover:scale-110 ${
