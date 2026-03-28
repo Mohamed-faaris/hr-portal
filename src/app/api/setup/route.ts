@@ -9,16 +9,17 @@ const MOCK_JOBS = [
     title: "HR Executive",
     location: "Aruppukottai",
     industry: "MSME",
-    description: "We are seeking a dedicated HR Executive to manage recruitment processes.",
+    description:
+      "We are seeking a dedicated HR Executive to manage recruitment processes.",
     eligibility: "MBA in HR preferred. Must speak Tamil and English fluently.",
     salaryMin: 15000,
     salaryMax: 25000,
     salaryCurrency: "INR",
     experienceMin: 0,
     experienceMax: 2,
-    type: 'full-time',
-    status: 'closed',
-    priority: 'urgent',
+    type: "full-time",
+    status: "closed",
+    priority: "urgent",
   },
   {
     title: "Textile Supervisor",
@@ -31,9 +32,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 3,
     experienceMax: 5,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Senior Software Engineer",
@@ -46,9 +47,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 5,
     experienceMax: 8,
-    type: 'full-time',
-    status: 'published',
-    priority: 'featured',
+    type: "full-time",
+    status: "published",
+    priority: "featured",
   },
   {
     title: "General Staff Nurse",
@@ -61,9 +62,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 1,
     experienceMax: 3,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Head Chef",
@@ -76,9 +77,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 5,
     experienceMax: 10,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Store Manager",
@@ -91,9 +92,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 2,
     experienceMax: 4,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Diesel Mechanic",
@@ -106,9 +107,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 1,
     experienceMax: 3,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Civil Site Engineer",
@@ -121,9 +122,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 0,
     experienceMax: 2,
-    type: 'full-time',
-    status: 'published',
-    priority: 'featured',
+    type: "full-time",
+    status: "published",
+    priority: "featured",
   },
   {
     title: "Customer Support Executive",
@@ -136,9 +137,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 0,
     experienceMax: 1,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Field Sales Officer",
@@ -151,9 +152,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 1,
     experienceMax: 3,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "NEET Physics Faculty",
@@ -166,9 +167,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 2,
     experienceMax: 5,
-    type: 'contract',
-    status: 'published',
-    priority: 'featured',
+    type: "contract",
+    status: "published",
+    priority: "featured",
   },
   {
     title: "Mechanical Maintenance Engg",
@@ -181,9 +182,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 2,
     experienceMax: 4,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Quality Controller (Garments)",
@@ -196,9 +197,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 1,
     experienceMax: 3,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Production Assistant",
@@ -211,9 +212,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 0,
     experienceMax: 1,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Accounts Manager",
@@ -226,9 +227,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 4,
     experienceMax: 7,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Digital Marketing Intern",
@@ -241,9 +242,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 0,
     experienceMax: 1,
-    type: 'internship',
-    status: 'published',
-    priority: 'normal',
+    type: "internship",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Medical Lab Technician",
@@ -256,9 +257,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 1,
     experienceMax: 3,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Restaurant Manager",
@@ -271,9 +272,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 3,
     experienceMax: 6,
-    type: 'full-time',
-    status: 'published',
-    priority: 'featured',
+    type: "full-time",
+    status: "published",
+    priority: "featured",
   },
   {
     title: "Salesman (Textile Showroom)",
@@ -286,9 +287,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 1,
     experienceMax: 5,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Car Wash Supervisor",
@@ -301,9 +302,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 2,
     experienceMax: 5,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Structural Engineer",
@@ -316,9 +317,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 2,
     experienceMax: 5,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
+    type: "full-time",
+    status: "published",
+    priority: "normal",
   },
   {
     title: "Tele-Sales Executive",
@@ -331,9 +332,9 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 0,
     experienceMax: 2,
-    type: 'full-time',
-    status: 'published',
-    priority: 'urgent',
+    type: "full-time",
+    status: "published",
+    priority: "urgent",
   },
   {
     title: "Merchandiser",
@@ -346,10 +347,10 @@ const MOCK_JOBS = [
     salaryCurrency: "INR",
     experienceMin: 2,
     experienceMax: 4,
-    type: 'full-time',
-    status: 'published',
-    priority: 'normal',
-  }
+    type: "full-time",
+    status: "published",
+    priority: "normal",
+  },
 ];
 
 /**
@@ -364,8 +365,8 @@ export async function POST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
 
-  const email = body.email || "Admin@dev.com";
-  const password = body.password || "Admin@dev.com";
+  const email = body.email || "dharvistahr@gmail.com";
+  const password = body.password || "Akracer@12345";
   const name = body.name || "test";
   const image = body.image || "https://example.com/image.png";
 
@@ -410,7 +411,7 @@ export async function POST(req: Request) {
           ...job,
           createdBy: userId!,
           config: DEFAULT_JOB_CONFIG,
-        }))
+        })),
       );
       logs.push(`Seeded ${MOCK_JOBS.length} jobs`);
     } catch (error: any) {
@@ -453,9 +454,9 @@ export async function POST(req: Request) {
     logs,
     user: userId
       ? {
-        id: userId,
-        email,
-      }
+          id: userId,
+          email,
+        }
       : null,
     jobsCount: MOCK_JOBS.length,
   });
