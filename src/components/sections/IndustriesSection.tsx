@@ -1,42 +1,35 @@
 "use client";
 
 import {
+  Rocket,
+  Store,
   Stethoscope,
-  Utensils,
   ShoppingBag,
-  Car,
-  HardHat,
-  Headphones,
-  TrendingUp,
+  Shirt,
+  Utensils,
   GraduationCap,
+  Car,
+  TrendingUp,
+  Headphones,
   Wrench,
   Factory,
-  Shirt,
-  Rocket,
-  Building2,
-  Store,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer } from "~/lib/animations";
 
 const industries = [
-  { name: "Medical / Healthcare", icon: Stethoscope },
-  { name: "Hotels / Restaurants", icon: Utensils },
-  { name: "Manufacturing Units", icon: Factory },
-  { name: "Retail / FMCG", icon: ShoppingBag },
-  { name: "Automobile", icon: Car },
-  { name: "Construction", icon: HardHat },
-  { name: "BPO / Customer Services", icon: Headphones },
-  { name: "Sales & Marketing", icon: TrendingUp },
-  { name: "Education & Training", icon: GraduationCap },
-  { name: "Engineering & Technical", icon: Wrench },
-  { name: "Textile Manufacturing", icon: Factory },
-  { name: "Small-scale Manufacturing", icon: Building2 },
-  { name: "Textiles & Garments", icon: Shirt },
+  { name: "Startups", icon: Rocket },
   { name: "MSME", icon: Store },
-  { name: "Start-Ups", icon: Rocket },
-  { name: "Factories & Industries", icon: Factory },
-  
+  { name: "Medical & Health Care", icon: Stethoscope },
+  { name: "Retail / FMCG", icon: ShoppingBag },
+  { name: "Textile & Garments", icon: Shirt },
+  { name: "Hotels / Restaurants", icon: Utensils },
+  { name: "Education & Institutions", icon: GraduationCap },
+  { name: "Automobile", icon: Car },
+  { name: "Sales & Marketing", icon: TrendingUp },
+  { name: "BPO & Customer Care", icon: Headphones },
+  { name: "Engineering & Technical", icon: Wrench },
+  { name: "Factories & Manufacturing", icon: Factory },
 ];
 
 export default function IndustriesSection() {
