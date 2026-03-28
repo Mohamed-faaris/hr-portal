@@ -9,10 +9,7 @@ import { eq } from "drizzle-orm";
  * This is NOT available in production.
  */
 export async function POST(req: Request) {
-  // Security: Only allow this in development environment
-  if (process.env.NODE_ENV !== "development") {
-    return new NextResponse(null, { status: 404 });
-  }
+  // Security: Only allow this once (if admin already exists, reject)
 
   const body = await req.json().catch(() => ({}));
 
