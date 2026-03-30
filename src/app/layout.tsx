@@ -6,6 +6,7 @@ import { Geist } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/components/ui/toaster";
 import { Toaster as Sonner } from "~/components/ui/sonner";
+import { Mixpanel } from "~/components/mixpanel";
 
 export const metadata: Metadata = {
   title: "Dharvista HR Portal",
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`}>
       <body>
         <TRPCReactProvider>
+          <Mixpanel />
           {children}
           <Toaster />
           <Sonner />
