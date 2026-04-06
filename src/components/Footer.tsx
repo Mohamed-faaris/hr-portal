@@ -151,10 +151,10 @@ export default function Footer() {
               <div className="group flex items-center gap-3 text-blue-50/90">
                 <Mail className="h-5 w-5 shrink-0 text-amber-400 drop-shadow-sm transition-colors group-hover:text-amber-300" />
                 <a
-                  href="mailto:contact@dharvistahr.com"
+                  href="mailto:contact@dharvistahr.in"
                   className="text-[15px] decoration-amber-400/50 underline-offset-4 transition-colors hover:text-white hover:underline"
                 >
-                  contact@dharvistahr.com
+                  contact@dharvistahr.in
                 </a>
               </div>
             </div>

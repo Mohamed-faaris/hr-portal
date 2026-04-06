@@ -234,13 +234,13 @@ export default function Contact() {
                         <span className="text-foreground font-medium">
                           Business:
                         </span>{" "}
-                        dharvistahrplacementsolutions@gmail.com
+                        contact@dharvistahr.in
                       </p>
                       <p className="mt-1">
                         <span className="text-foreground font-medium">
-                          Candidate:
+                          
                         </span>{" "}
-                        dharvistahr@gmail.com
+                        
                       </p>
                     </div>
                   </div>
